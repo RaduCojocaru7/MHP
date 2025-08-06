@@ -1,0 +1,140 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "fbtool",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.18.3",
+      "toolsId": "07a10b4b-f6af-4ccd-9c88-0dac23e81a2d"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "rootView": {
+      "viewName": "fbtool.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    },
+    "dependencies": {
+      "minUI5Version": "1.138.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "fbtool.i18n.i18n"
+        }
+      },
+      "userData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/userData.json"
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "fbtool.view",
+        "async": true,
+        "viewPath": "fbtool.view"
+      },
+      "routes": [
+        {
+          "name": "Login",
+          "pattern": "",
+          "target": ["TargetLogin"]
+        },
+        {
+          "name": "ForgotPassword",
+          "pattern": "ForgotPassword",
+          "target": ["TargetForgotPassword"]
+        },
+        {
+          "name": "UserDashboard",
+          "pattern": "UserDashboard",
+          "target": ["TargetUserDashboard"]
+        },
+        {
+          "name": "ManagerDashboard",
+          "pattern": "ManagerDashboard",
+          "target": ["TargetManagerDashboard"]
+        },
+        {
+          "pattern": "fb360",
+          "name": "fb360",
+          "target": "fb360"
+        }
+      ],
+      "targets": {
+        "TargetLogin": {
+          "id": "Login",
+          "name": "Login"
+        },
+        "TargetForgotPassword": {
+          "id": "ForgotPassword",
+          "name": "ForgotPassword"
+        },
+        "TargetUserDashboard": {
+          "id": "UserDashboard",
+          "name": "UserDashboard"
+        },
+        "TargetManagerDashboard": {
+          "id": "ManagerDashboard",
+          "name": "ManagerDashboard"
+        },
+                "fb360": {
+          "viewName": "360FB",
+          "viewType": "XML",
+          "viewId": "fb360",
+          "controlAggregation": "pages",
+          "controlId": "app", 
+          "transition": "slide"
+        }
+      }
+    }
+  }
+}

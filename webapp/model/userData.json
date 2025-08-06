@@ -1,0 +1,38 @@
+[
+  {
+    "email": "STEFANIA-MARIA.MARACINE@MHP.COM",
+    "password": "test123",
+    "fullName": "STEFANIA MARACINE",
+    "careerLevel": "INTERN",
+    "serviceUnit": "SAPUIS DEVELOPMENT",
+    "businessArea": "ERP SOLUTIONS",
+    "role": "user"
+  },
+  {
+    "email": "alex.popescu@example.com",
+    "password": "passalex",
+    "fullName": "Alex Popescu",
+    "careerLevel": "JUNIOR",
+    "serviceUnit": "SAP CONSULTING",
+    "businessArea": "ERP SOLUTIONS",
+    "role": "user"
+  },
+  {
+    "email": "maria.ionescu@example.com",
+    "password": "passmaria",
+    "fullName": "Maria Ionescu",
+    "careerLevel": "SENIOR",
+    "serviceUnit": "SAP DEVELOPMENT",
+    "businessArea": "CLOUD SOLUTIONS",
+    "role": "user"
+  },
+  {
+    "email": "andrei.manager@example.com",
+    "password": "passmanager",
+    "fullName": "Andrei Manager",
+    "careerLevel": "MANAGER",
+    "serviceUnit": "SAP MANAGEMENT",
+    "businessArea": "MANAGEMENT",
+    "role": "manager"
+  }
+]

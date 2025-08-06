@@ -1,0 +1,50 @@
+<mvc:View
+  controllerName="fbtool.controller.Login"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  class = "dark-blue-background">
+  
+
+  <Page id="loginPage" showHeader="false" backgroundDesign="Solid">
+    <VBox
+      id="loginVBox"
+      alignItems="Center"
+      justifyContent="Center"
+      width="100%"
+      height="100%"
+      class="loginBackground">
+      
+      <!-- Card alb -->
+      <VBox id="loginCard" width="400px" class="loginCard sapUiContentPadding sapUiSmallMargin">
+        <!-- Logo MHP -->
+      <!-- <Image
+  src="https://upload.wikimedia.org/wikipedia/commons/3/32/MHP_Logo.svg"
+  alt="Test"
+  width="120px" /> --> 
+  <!-- nu merge -->
+
+        <!-- Titlu -->
+        <Text text="Fill in your credentials" class="loginTitle" textAlign="Center"/>
+
+        <!-- Formular -->
+        <Label text="Email:" labelFor="emailInput" design="Bold" class="loginLabel"/>
+        <Input id="emailInput" placeholder="Enter Work Email" width="100%"/>
+
+        <Label text="Password:" labelFor="passwordInput" design="Bold" class="loginLabel sapUiSmallMarginTop"/>
+        <Input 
+          id="passwordInput" 
+          type="Password" 
+          placeholder="Enter Password" 
+          width="100%"/>
+
+        <!-- Butoane -->
+        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+          <Button id="loginButton" icon="sap-icon://log" text="Log In" type="Transparent" press="onLogin"/>
+          <Link id="forgotPasswordLink" text="Forgot password?" press="onForgotPassword" class="forgotPasswordLink"/>
+        </HBox>
+      </VBox>
+    </VBox>
+  </Page>
+</mvc:View>
+

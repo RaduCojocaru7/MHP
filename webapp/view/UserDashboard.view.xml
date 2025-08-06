@@ -1,0 +1,51 @@
+<mvc:View
+  controllerName="fbtool.controller.UserDashboard"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page>
+    <headerContent>
+      <Button icon="sap-icon://log" text="Logout" press="onLogout" type="Reject"/>
+    </headerContent>
+    <content>
+
+      <!-- Card user info -->
+      <VBox class="sapUiMediumMargin">
+        <ObjectHeader
+          title="{user>/fullName}"
+          intro="Email: {user>/email}"
+          icon="sap-icon://employee"
+          responsive="true">
+          <ObjectAttribute title="Career Level" text="{user>/careerLevel}" />
+          <ObjectAttribute title="Service Unit" text="{user>/serviceUnit}" />
+          <ObjectAttribute title="Business Area" text="{user>/businessArea}" />
+        </ObjectHeader>
+      </VBox>
+
+      <!-- Butoane rotunde -->
+      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+        <Button
+          icon="sap-icon://group"
+          text="MY TEAM"
+          type="Emphasized"
+          class="sapUiTinyMarginEnd"
+          width="10rem"
+          iconFirst="true" />
+        <Button
+          icon="sap-icon://document"
+          text="360FB"
+          press="onNavigateTo360FB"
+          class="sapUiTinyMarginEnd"
+          width="10rem"
+          iconFirst="true" />
+        <Button
+          icon="sap-icon://business-card"
+          text="PEG"
+          width="10rem"
+          iconFirst="true" />
+      </HBox>
+
+    </content>
+  </Page>
+</mvc:View>

@@ -1,0 +1,35 @@
+.loginCard {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: white;
+}
+
+.feedbackCard {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: white;
+  padding: 20px;
+}
+
+/* inca nu merge bg la imagine de login*/
+.dark-blue-background {
+  background-color: #0d1b2a; /* albastru inchis */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.feedbackButton {
+  background: #0d2346 !important; /* albastru inchis */
+  color: #fff !important;
+  border-radius: 8px !important;
+  border: none !important;
+}
+.feedbackButton .sapMBtnInner {
+  background: #0d2346 !important;
+  color: #fff !important;
+}

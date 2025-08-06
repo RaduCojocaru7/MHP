@@ -1,0 +1,46 @@
+<mvc:View
+  controllerName="fbtool.controller.ManagerDashboard"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page title="Manager Dashboard">
+    <headerContent>
+      <Button icon="sap-icon://log" text="Logout" press="onLogout" type="Reject"/>
+    </headerContent>
+    <content>
+      <!-- Container user info -->
+      <VBox class="sapUiSmallMargin">
+        <HBox justifyContent="SpaceBetween" alignItems="Center">
+          <VBox>
+            <Text text="{user>/fullName}" class="sapUiTinyMarginBottom sapUiTinyMarginTop" />
+            <Text text="Email: {user>/email}" />
+          </VBox>
+          <VBox class="sapUiSmallMargin">
+            <Text text="Career Level: {user>/careerLevel}" />
+            <Text text="Service Unit: {user>/serviceUnit}" />
+            <Text text="Business Area: {user>/businessArea}" />
+          </VBox>
+        </HBox>
+      </VBox>
+
+      <!-- Butoane rotunde -->
+      <HBox justifyContent="Start" class="sapUiMediumMarginTop">
+        <Button icon="sap-icon://group" text="MY TEAM" class="sapUiTinyMarginEnd" type="Emphasized" press="onMyTeam" />
+        <Button icon="sap-icon://document" text="360FB" class="sapUiTinyMarginEnd" press="onNavigateTo360FB" />
+        <Button icon="sap-icon://attachment" text="PEG" />
+      </HBox>
+
+      <!-- Secțiunea My Team - inițial ascunsă -->
+      <VBox id="myTeamSection" visible="false" class="sapUiMediumMarginTop">
+        <Title text="My Team Members" level="H4" class="sapUiSmallMarginBottom"/>
+        <List items="{/teamMembers}" class="sapUiSmallMarginTop">
+          <StandardListItem 
+            title="{name} {surname}" 
+            description="Career Level: {careerLevel}"
+            icon="sap-icon://employee" />
+        </List>
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

@@ -1,0 +1,39 @@
+<mvc:View
+  controllerName="fbtool.controller.FB360"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page title="360 Feedback Page">
+    <headerContent>
+      <Button icon="sap-icon://nav-back" text="Exit" press="onExit"/>
+    </headerContent>
+    <content>
+      <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
+        <VBox class="feedbackCard sapUiMediumMargin" width="500px">
+          <Title text="Send Feedback 360" level="H3" class="sapUiSmallMarginBottom"/>
+
+          <Label text="Name" labelFor="nameInput"/>
+          <Input id="nameInput" placeholder="User" width="100%" class="sapUiSmallMarginBottom"/>
+
+          <Label text="Project" labelFor="projectCombo"/>
+          <ComboBox id="projectCombo" width="100%" class="sapUiSmallMarginBottom">
+            <core:Item key="gold" text="Gold" xmlns:core="sap.ui.core"/>
+          </ComboBox>
+
+          <Label text="Feedback type" labelFor="typeCombo"/>
+          <ComboBox id="typeCombo" width="100%" class="sapUiSmallMarginBottom">
+            <core:Item key="tech" text="Technical Skills" xmlns:core="sap.ui.core"/>
+            <core:Item key="soft" text="Soft Skills" xmlns:core="sap.ui.core"/>
+            <core:Item key="other" text="Other Skills" xmlns:core="sap.ui.core"/>
+          </ComboBox>
+
+          <Label text="Feedback" labelFor="feedbackText"/>
+          <TextArea id="feedbackText" placeholder="Write your feedback here..." rows="5" width="100%" class="sapUiSmallMarginBottom"/>
+
+          <Button icon="sap-icon://paper-plane" text="Send Feedback 360" press="onSendFeedback" class="feedbackButton"/>
+        </VBox>
+      </HBox>
+    </content>
+  </Page>
+</mvc:View>
