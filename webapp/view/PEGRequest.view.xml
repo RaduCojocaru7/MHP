@@ -1,0 +1,63 @@
+<mvc:View
+  controllerName="fbtool.controller.PEGRequest"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page title="PEG Request">
+    <headerContent>
+      <Button icon="sap-icon://nav-back" text="Exit" press="onExit"/>
+    </headerContent>
+
+    <content>
+      <HBox justifyContent="Center" class="sapUiMediumMarginTop">
+        <VBox width="90%" class="feedbackCard sapUiResponsiveMargin sapUiContentPadding">
+
+          <!-- Conținut împărțit pe două coloane -->
+          <HBox width="100%" justifyContent="SpaceBetween" alignItems="Start">
+
+            <!-- General Information -->
+            <VBox width="45%">
+              <Title text="General Information" level="H4" class="sapUiSmallMarginBottom"/>
+              <Text text="Name: {user>/fullName}" class="sapUiTinyMarginBottom"/>
+              <Text text="Personal Number: {user>/personalNr}" class="sapUiTinyMarginBottom"/>
+              <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom"/>
+              <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom"/>
+              <Text text="Fiscal Year: {user>/fiscalYear}" class="sapUiTinyMarginBottom"/>
+            </VBox>
+
+            <!-- PEG Request -->
+            <VBox width="45%">
+              <Title text="PEG Request" level="H4" class="sapUiSmallMarginBottom"/>
+              <Label text="Current Date"/>
+              <DatePicker value="{peg>/currentDate}" displayFormat="yyyy-MM-dd" editable="false" class="sapUiSmallMarginBottom"/>
+
+              <Label text="Manager"/>
+              <Select items="{peg>/managers}" selectedKey="{peg>/selectedManager}" class="sapUiSmallMarginBottom">
+                <core:Item key="{peg>id}" text="{peg>name}"/>
+              </Select>
+
+              <Label text="Project Number"/>
+              <Select items="{peg>/projects}" selectedKey="{peg>/selectedProject}" class="sapUiSmallMarginBottom">
+                <core:Item key="{peg>id}" text="{peg>number}"/>
+              </Select>
+            </VBox>
+
+          </HBox>
+
+          <!-- Butonul jos -->
+          <HBox justifyContent="End" class="sapUiMediumMarginTop">
+            <Button
+              text="Send Request"
+              icon="sap-icon://accept"
+              type="Emphasized"
+              press="onSendRequest"
+              class="feedbackButton"/>
+          </HBox>
+
+        </VBox>
+      </HBox>
+    </content>
+  </Page>
+</mvc:View>

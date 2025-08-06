@@ -28,6 +28,14 @@ sap.ui.define([
     onNavigateTo360FB: function () {
       // Navighează către pagina 360FB
       this.getOwnerComponent().getRouter().navTo("fb360");
+    },
+    onProfileInfoPress: function () {
+      // Navighează către view-ul ProfileInfo
+      this.getOwnerComponent().getRouter().navTo("ProfileInfo");
+    },
+    onNavigateToPEG: function () {
+      this.getOwnerComponent().getRouter().navTo("PEGRequest");
     }
+
   });
 });

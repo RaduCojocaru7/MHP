@@ -78,7 +78,9 @@ sap.ui.define([
           email: foundUser.email,
           careerLevel: foundUser.careerLevel,
           serviceUnit: foundUser.serviceUnit,
-          businessArea: foundUser.businessArea
+          businessArea: foundUser.businessArea,
+          personalNr: foundUser.personalNr,
+          fiscalYear: foundUser.fiscalYear
         });
         this.getOwnerComponent().setModel(userModel, "loggedUser");
         MessageToast.show("Welcome, " + foundUser.fullName + "!");

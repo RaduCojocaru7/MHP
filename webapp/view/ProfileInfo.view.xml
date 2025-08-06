@@ -1,0 +1,66 @@
+<mvc:View
+  controllerName="fbtool.controller.ProfileInfo"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page title="User Profile" showHeader="true">
+
+    <VBox
+      width="100%"
+      alignItems="Center"
+      justifyContent="Center"
+      class="sapUiContentPadding sapUiResponsiveMargin">
+
+      <Panel
+        width="420px"
+        headerText="User Details"
+        class="sapUiResponsiveMargin sapUiMediumMargin">
+
+        <VBox class="sapUiMediumMargin" alignItems="Center">
+
+          <Avatar
+            displaySize="L"
+            src="sap-icon://employee"
+            class="sapUiSmallMarginBottom"/>
+
+          <Text text="{user>/fullName}" class="sapUiSmallMarginBottom sapUiMediumFont sapUiStrong"/>
+          <Text text="{user>/email}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+
+          <VBox class="sapUiSmallMarginTop" alignItems="Start">
+
+            <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+              <core:Icon src="sap-icon://badge" size="1.2rem" class="sapUiTinyMarginEnd"/>
+              <Text text="Personal Nr.: {user>/personalNr}"/>
+            </HBox>
+
+            <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+              <core:Icon src="sap-icon://factory" size="1.2rem" class="sapUiTinyMarginEnd"/>
+              <Text text="Service Unit: {user>/serviceUnit}"/>
+            </HBox>
+
+            <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+              <core:Icon src="sap-icon://employee-pane" size="1.2rem" class="sapUiTinyMarginEnd"/>
+              <Text text="Career Level: {user>/careerLevel}"/>
+            </HBox>
+
+            <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+              <core:Icon src="sap-icon://business-objects-experience" size="1.2rem" class="sapUiTinyMarginEnd"/>
+              <Text text="Business Area: {user>/businessArea}"/>
+            </HBox>
+
+            <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+              <core:Icon src="sap-icon://calendar" size="1.2rem" class="sapUiTinyMarginEnd"/>
+              <Text text="Fiscal Year: {user>/fiscalYear}"/>
+            </HBox>
+
+          </VBox>
+        </VBox>
+      </Panel>
+
+      <Button text="Back" icon="sap-icon://nav-back" type="Emphasized" press="onNavBack" class="sapUiMediumMarginTop"/>
+    </VBox>
+
+  </Page>
+</mvc:View>

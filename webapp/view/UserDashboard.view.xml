@@ -4,46 +4,66 @@
   xmlns="sap.m"
   displayBlock="true">
 
-  <Page>
+  <Page title="User Dashboard">
     <headerContent>
       <Button icon="sap-icon://log" text="Logout" press="onLogout" type="Reject"/>
     </headerContent>
+
     <content>
 
       <!-- Card user info -->
       <VBox class="sapUiMediumMargin">
-        <ObjectHeader
-          title="{user>/fullName}"
-          intro="Email: {user>/email}"
-          icon="sap-icon://employee"
-          responsive="true">
-          <ObjectAttribute title="Career Level" text="{user>/careerLevel}" />
-          <ObjectAttribute title="Service Unit" text="{user>/serviceUnit}" />
-          <ObjectAttribute title="Business Area" text="{user>/businessArea}" />
-        </ObjectHeader>
+        <VBox class="sapUiSmallMargin sapUiContentPadding userCard">
+
+          <!-- Info utilizator pe două coloane -->
+          <HBox justifyContent="SpaceBetween" alignItems="Start" class="sapUiTinyMarginBottom">
+
+            <!-- Stânga: avatar, nume, email -->
+            <HBox alignItems="Center">
+              <Avatar displaySize="L" src="sap-icon://employee" class="sapUiTinyMarginEnd"/>
+              <VBox>
+                <HBox alignItems="Center">
+                  <Text text="{= ${user>/fullName} ? ${user>/fullName}.toUpperCase() : '' }" class="userNameCaps sapUiSmallMarginEnd"/>
+                  <Button
+                    text="Profile Info"
+                    icon="sap-icon://hint"
+                    type="Transparent"
+                    press="onProfileInfoPress"
+                    class="profileInfoBtn subtleBtn sapUiTinyMarginBottom"/>
+                </HBox>
+                <Text text="{= 'Email: ' + (${user>/email} || '') }" class="sapUiTinyMarginTop sapUiSmallFont"/>
+              </VBox>
+            </HBox>
+
+            <!-- Dreapta: Profile Info + info user -->
+            <VBox alignItems="End" class="sapUiTinyMarginBegin">
+              
+
+              <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+              <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+              <Text text="Business Area: {user>/businessArea}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+            </VBox>
+          </HBox>
+
+        </VBox>
       </VBox>
 
       <!-- Butoane rotunde -->
       <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
         <Button
-          icon="sap-icon://group"
-          text="MY TEAM"
-          type="Emphasized"
-          class="sapUiTinyMarginEnd"
-          width="10rem"
-          iconFirst="true" />
-        <Button
           icon="sap-icon://document"
           text="360FB"
           press="onNavigateTo360FB"
-          class="sapUiTinyMarginEnd"
+          class="sapUiTinyMarginEnd roundedButton"
           width="10rem"
           iconFirst="true" />
         <Button
           icon="sap-icon://business-card"
           text="PEG"
           width="10rem"
-          iconFirst="true" />
+          class="roundedButton"
+          iconFirst="true"
+          press="onNavigateToPEG" />
       </HBox>
 
     </content>

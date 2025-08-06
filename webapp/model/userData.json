@@ -6,7 +6,9 @@
     "careerLevel": "INTERN",
     "serviceUnit": "SAPUIS DEVELOPMENT",
     "businessArea": "ERP SOLUTIONS",
-    "role": "user"
+    "role": "user",
+    "personalNr": "38472615",
+    "fiscalYear": "2025"
   },
   {
     "email": "alex.popescu@example.com",
@@ -15,7 +17,9 @@
     "careerLevel": "JUNIOR",
     "serviceUnit": "SAP CONSULTING",
     "businessArea": "ERP SOLUTIONS",
-    "role": "user"
+    "role": "user",
+    "personalNr": "92736481",
+    "fiscalYear": "2025"
   },
   {
     "email": "maria.ionescu@example.com",
@@ -24,7 +28,9 @@
     "careerLevel": "SENIOR",
     "serviceUnit": "SAP DEVELOPMENT",
     "businessArea": "CLOUD SOLUTIONS",
-    "role": "user"
+    "role": "user",
+    "personalNr": "56183724",
+    "fiscalYear": "2025"
   },
   {
     "email": "andrei.manager@example.com",
@@ -33,6 +39,8 @@
     "careerLevel": "MANAGER",
     "serviceUnit": "SAP MANAGEMENT",
     "businessArea": "MANAGEMENT",
-    "role": "manager"
+    "role": "manager",
+    "personalNr": "74829163",
+    "fiscalYear": "2025"
   }
 ]
