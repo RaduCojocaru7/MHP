@@ -45,6 +45,9 @@ sap.ui.define([
 
     onNavigateToPEG: function () {
       this.getOwnerComponent().getRouter().navTo("PEGRequest");
+    },
+        onNavigateToPEGList: function () {
+      this.getOwnerComponent().getRouter().navTo("PEGList");
     }
   });
 });

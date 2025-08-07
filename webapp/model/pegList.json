@@ -1,0 +1,58 @@
+[
+  {
+    "id": "PEG001",
+    "title": "Feedback pentru Q1",
+    "status": "Pending",
+    "createdBy": "STEFANIA MARACINE",
+    "email": "stefania-maria.maracine@mhp.com",
+    "createdDate": "2025-06-01"
+  },
+  {
+    "id": "PEG002",
+    "title": "Feedback final 2024",
+    "status": "Done",
+    "createdBy": "ALEX POPESCU",
+    "email": "alex.popescu@example.com",
+    "createdDate": "2025-07-15"
+  },
+  {
+    "id": "PEG003",
+    "title": "Evaluare trimestru 2",
+    "status": "Pending",
+    "createdBy": "MARIA IONESCU",
+    "email": "maria.ionescu@example.com",
+    "createdDate": "2025-08-01"
+  },
+  {
+    "id": "PEG004",
+    "title": "Feedback intermediar",
+    "status": "Pending",
+    "createdBy": "ALEX POPESCU",
+    "email": "alex.popescu@example.com",
+    "createdDate": "2025-08-05"
+  },
+  {
+    "id": "PEG005",
+    "title": "Evaluare finală",
+    "status": "Done",
+    "createdBy": "STEFANIA MARACINE",
+    "email": "stefania-maria.maracine@mhp.com",
+    "createdDate": "2025-07-20"
+  },
+  {
+    "id": "PEG006",
+    "title": "Feedback Q2",
+    "status": "Pending",
+    "createdBy": "ALEX POPESCU",
+    "email": "alex.popescu@example.com",
+    "createdDate": "2025-08-07"
+  },
+  {
+    "id": "PEG007",
+    "title": "Confirmare obiective",
+    "status": "Done",
+    "createdBy": "MARIA IONESCU",
+    "email": "maria.ionescu@example.com",
+    "createdDate": "2025-07-10"
+  }
+]

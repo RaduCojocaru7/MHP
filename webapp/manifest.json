@@ -61,6 +61,10 @@
       "userData": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "model/userData.json"
+      },
+        "pegList": {
+  "type": "sap.ui.model.json.JSONModel",
+  "uri": "model/pegList.json"
       }
     },
       "resources": {
@@ -123,7 +127,13 @@
           "name": "PEGRequest",
           "pattern": "PEGRequest",
           "target": ["TargetPEGRequest"]
+        },
+        {
+          "name": "PEGList",
+          "pattern": "PEGList",
+          "target": ["TargetPEGList"]
         }
+
       ],
       "targets": {
         "TargetLogin": {
@@ -166,6 +176,15 @@
           "viewName": "PEGRequest",
           "viewType": "XML",
           "viewId": "PEGRequest",
+          "controlAggregation": "pages",
+          "controlId": "app",
+          "transition": "slide"
+        },
+                "TargetPEGList": {
+          "name": "PEGList",
+          "viewName": "PEGList",
+          "viewType": "XML",
+          "viewId": "PEGList",
           "controlAggregation": "pages",
           "controlId": "app",
           "transition": "slide"

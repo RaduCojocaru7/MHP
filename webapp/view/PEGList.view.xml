@@ -1,0 +1,35 @@
+<mvc:View
+  controllerName="fbtool.controller.PEGList"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m">
+
+  <Page title="My PEG List">
+    <headerContent>
+      <Button
+        text="Back"
+        icon="sap-icon://nav-back"
+        press="onNavBack"
+        type="Transparent"
+        class="subtleBtn"/>
+    </headerContent>
+
+    <content>
+      <SegmentedButton selectionChange="onFilterChange">
+        <items>
+          <SegmentedButtonItem key="Pending" text="Pending"/>
+          <SegmentedButtonItem key="Done" text="Done"/>
+        </items>
+      </SegmentedButton>
+
+      <List
+        items="{peg>/requests}"
+        class="sapUiResponsiveMargin sapUiTinyMarginTop">
+        <StandardListItem
+          title="{peg>title}"
+          description="{peg>createdDate}"
+          info="{peg>status}"
+          infoState="{= ${peg>status} === 'Done' ? 'Success' : 'Warning' }"/>
+      </List>
+    </content>
+  </Page>
+</mvc:View>
