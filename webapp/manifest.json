@@ -72,16 +72,15 @@
       },
     "routing": {
       "config": {
-        "routerClass": "sap.m.routing.Router",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "transition": "slide",
-        "type": "View",
-        "viewType": "XML",
-        "path": "fbtool.view",
-        "async": true,
-        "viewPath": "fbtool.view"
-      },
+  "routerClass": "sap.m.routing.Router",
+  "controlAggregation": "pages",
+  "controlId": "app",
+  "transition": "slide",
+  "type": "View",
+  "viewType": "XML",
+  "path": "fbtool.view",
+  "async": true
+},
       "routes": [
         {
           "name": "Login",
@@ -97,6 +96,11 @@
           "name": "UserDashboard",
           "pattern": "UserDashboard",
           "target": ["TargetUserDashboard"]
+        },
+        {
+          "pattern": "ProfileInfo",
+          "name": "ProfileInfo",
+          "target": "ProfileInfo"
         },
         {
           "name": "ManagerDashboard",
@@ -126,6 +130,10 @@
           "id": "Login",
           "name": "Login"
         },
+                "ProfileInfo": {
+          "viewName": "ProfileInfo",
+          "viewLevel": 2
+        },
         "TargetForgotPassword": {
           "id": "ForgotPassword",
           "name": "ForgotPassword"
@@ -146,6 +154,7 @@
           "controlId": "app", 
           "transition": "slide"
         },
+        
                 "TargetProfileInfo": {
           "name": "ProfileInfo",
           "viewName": "ProfileInfo",
@@ -161,9 +170,6 @@
           "controlId": "app",
           "transition": "slide"
         }
-
-
-
       }
     }
   }

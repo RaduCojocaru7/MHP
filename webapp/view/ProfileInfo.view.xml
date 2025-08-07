@@ -6,6 +6,16 @@
   displayBlock="true">
 
   <Page title="User Profile" showHeader="true">
+    
+    <!-- Butonul de Back în colțul din dreapta sus -->
+   <headerContent>
+  <Button
+    icon="sap-icon://nav-back"
+    text="Back"
+    press="onNavBack"
+    class="profileInfoBtn subtleBtn"
+    type="Transparent" />
+</headerContent>
 
     <VBox
       width="100%"
@@ -59,7 +69,6 @@
         </VBox>
       </Panel>
 
-      <Button text="Back" icon="sap-icon://nav-back" type="Emphasized" press="onNavBack" class="sapUiMediumMarginTop"/>
     </VBox>
 
   </Page>

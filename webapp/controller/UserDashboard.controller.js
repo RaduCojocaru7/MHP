@@ -5,37 +5,46 @@ sap.ui.define([
 
   return Controller.extend("fbtool.controller.UserDashboard", {
     onInit: function () {
-      // Obține modelul utilizatorului logat
-      const oUserModel = this.getOwnerComponent().getModel("loggedUser");
-      
-      if (oUserModel) {
-        const oUserData = oUserModel.getData();
-        console.log("👤 User dashboard loaded for:", oUserData);
-        
-        // Setează modelul pe view pentru data binding
-        this.getView().setModel(oUserModel, "user");
-      } else {
-        console.error("❌ No logged user model found");
-        // Redirectează înapoi la login dacă nu există utilizator logat
-        this.getOwnerComponent().getRouter().navTo("Login");
-      }
+      var oView = this.getView();
+
+      // Când view-ul e afișat, refacem legarea modelului
+      this.getView().addEventDelegate({
+        onBeforeShow: function () {
+          const oUserModel = this.getOwnerComponent().getModel("loggedUser");
+
+          if (oUserModel) {
+            oView.setModel(oUserModel, "user");
+            oUserModel.refresh(true);
+            console.log("🔁 Model refreshed and bound to UserDashboard");
+          } else {
+            console.error("❌ No logged user model, redirecting...");
+            this.getOwnerComponent().getRouter().navTo("Login");
+          }
+        }.bind(this)
+      });
     },
+
     onLogout: function () {
-      // Șterge modelul utilizatorului logat și redirecționează la login
       this.getOwnerComponent().setModel(null, "loggedUser");
+
+      var oLoginView = this.getOwnerComponent().byId("Login");
+      if (oLoginView && oLoginView.getController && oLoginView.getController().clearInputs) {
+        oLoginView.getController().clearInputs();
+      }
+
       this.getOwnerComponent().getRouter().navTo("Login");
     },
+
     onNavigateTo360FB: function () {
-      // Navighează către pagina 360FB
       this.getOwnerComponent().getRouter().navTo("fb360");
     },
+
     onProfileInfoPress: function () {
-      // Navighează către view-ul ProfileInfo
       this.getOwnerComponent().getRouter().navTo("ProfileInfo");
     },
+
     onNavigateToPEG: function () {
       this.getOwnerComponent().getRouter().navTo("PEGRequest");
     }
-
   });
 });

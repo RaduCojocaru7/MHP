@@ -6,41 +6,80 @@
 
   <Page title="Manager Dashboard">
     <headerContent>
-      <Button icon="sap-icon://log" text="Logout" press="onLogout" type="Reject"/>
+            <Button
+        id="logoutButtonManager"
+        icon="sap-icon://log"
+        text="Log Out"
+        press="onLogout"
+        type="Transparent"
+        class="pureBlueBtn"/>
+
     </headerContent>
+
     <content>
-      <!-- Container user info -->
-      <VBox class="sapUiSmallMargin">
-        <HBox justifyContent="SpaceBetween" alignItems="Center">
-          <VBox>
-            <Text text="{user>/fullName}" class="sapUiTinyMarginBottom sapUiTinyMarginTop" />
-            <Text text="Email: {user>/email}" />
-          </VBox>
-          <VBox class="sapUiSmallMargin">
-            <Text text="Career Level: {user>/careerLevel}" />
-            <Text text="Service Unit: {user>/serviceUnit}" />
-            <Text text="Business Area: {user>/businessArea}" />
-          </VBox>
-        </HBox>
+      <!-- Info Card - Stil identic UserDashboard -->
+      <VBox class="sapUiMediumMargin">
+        <VBox class="sapUiSmallMargin sapUiContentPadding userCard">
+
+          <HBox justifyContent="SpaceBetween" alignItems="Start" class="sapUiTinyMarginBottom">
+
+            <!-- Stânga: Avatar + nume -->
+            <HBox alignItems="Center">
+              <Avatar displaySize="L" src="sap-icon://manager" class="sapUiTinyMarginEnd" />
+              <VBox>
+                <HBox alignItems="Center">
+                  <Text text="{= ${user>/fullName} ? ${user>/fullName}.toUpperCase() : '' }"
+                        class="userNameCaps sapUiSmallMarginEnd" />
+                  <Button
+                    text="Profile Info"
+                    icon="sap-icon://hint"
+                    type="Transparent"
+                    press="onProfileInfoPress"
+                    class="profileInfoBtn subtleBtn sapUiTinyMarginBottom" />
+                </HBox>
+                <Text text="{= 'Email: ' + (${user>/email} || '') }" class="sapUiTinyMarginTop sapUiSmallFont" />
+              </VBox>
+            </HBox>
+
+            <!-- Dreapta: Info suplimentară -->
+            <VBox alignItems="End" class="sapUiTinyMarginBegin">
+              <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont" />
+              <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont" />
+              <Text text="Business Area: {user>/businessArea}" class="sapUiTinyMarginBottom sapUiSmallFont" />
+            </VBox>
+          </HBox>
+
+        </VBox>
       </VBox>
 
-      <!-- Butoane rotunde -->
-      <HBox justifyContent="Start" class="sapUiMediumMarginTop">
-        <Button icon="sap-icon://group" text="MY TEAM" class="sapUiTinyMarginEnd" type="Emphasized" press="onMyTeam" />
-        <Button icon="sap-icon://document" text="360FB" class="sapUiTinyMarginEnd" press="onNavigateTo360FB" />
-        <Button icon="sap-icon://attachment" text="PEG" />
+      <!-- Butoane 360FB + PEG -->
+      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+        <Button
+          icon="sap-icon://document"
+          text="360FB"
+          press="onNavigateTo360FB"
+          class="sapUiTinyMarginEnd roundedButton"
+          width="10rem"
+          iconFirst="true" />
+        <Button
+          icon="sap-icon://business-card"
+          text="PEG"
+          width="10rem"
+          class="roundedButton"
+          iconFirst="true"
+          press="onNavigateToPEG" />
       </HBox>
 
-      <!-- Secțiunea My Team - inițial ascunsă -->
-      <VBox id="myTeamSection" visible="false" class="sapUiMediumMarginTop">
-        <Title text="My Team Members" level="H4" class="sapUiSmallMarginBottom"/>
-        <List items="{/teamMembers}" class="sapUiSmallMarginTop">
-          <StandardListItem 
-            title="{name} {surname}" 
-            description="Career Level: {careerLevel}"
-            icon="sap-icon://employee" />
+      <!-- My Team - DOAR la Manager -->
+      <VBox class="sapUiMediumMargin sapUiContentPadding userCard">
+        <Text text="My Team" class="profileHeader sapUiSmallMarginBottom" />
+        <!-- Înlocuiește mai jos cu table, list sau alt conținut real dacă ai -->
+        <List>
+          <StandardListItem title="Employee 1" description="INTERN - ERP Solutions" icon="sap-icon://employee" />
+          <StandardListItem title="Employee 2" description="JUNIOR - Cloud Solutions" icon="sap-icon://employee" />
         </List>
       </VBox>
+
     </content>
   </Page>
 </mvc:View>

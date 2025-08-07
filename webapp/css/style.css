@@ -8,14 +8,13 @@
 .feedbackCard {
   border: 1px solid #ccc;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: white;
-  padding: 20px;
+  padding: 30px;
 }
 
-/* inca nu merge bg la imagine de login*/
 .dark-blue-background {
-  background-color: #0d1b2a; /* albastru inchis */
+  background-color: #0d1b2a;
   height: 100%;
   width: 100%;
   display: flex;
@@ -24,11 +23,12 @@
 }
 
 .feedbackButton {
-  background: #0d2346 !important; /* albastru inchis */
+  background: #0d2346 !important;
   color: #fff !important;
   border-radius: 8px !important;
   border: none !important;
 }
+
 .feedbackButton .sapMBtnInner {
   background: #0d2346 !important;
   color: #fff !important;
@@ -67,42 +67,38 @@
 .subtleBtn {
   background: transparent !important;
   color: #0d2346 !important;
-  border: 1px solid #d0d4da !important;
-  border-radius: 8px !important;
-  box-shadow: none !important;
+  border: none !important;
   font-weight: 500 !important;
-  transition: background 0.2s, color 0.2s;
+  font-size: 1rem !important;
+  box-shadow: none !important;
 }
-.subtleBtn .sapMBtnInner {
+
+.subtleBtn .sapMBtnInner,
+.subtleBtn .sapMBtnIcon {
   background: transparent !important;
   color: #0d2346 !important;
   border: none !important;
   box-shadow: none !important;
 }
-.subtleBtn:hover, .subtleBtn:focus {
+
+.subtleBtn:hover,
+.subtleBtn:focus {
   background: #f4f6fa !important;
   color: #7b8a99 !important;
 }
-.subtleBtn .sapMBtnIcon {
-  color: #7b8a99 !important;
-}
 
-.feedbackCard {
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  padding: 30px;
-}
-
-.feedbackButton {
-  background: #0d2346 !important;
-  color: #fff !important;
-  border-radius: 8px !important;
+.blueTextBtn {
+  color: #0070f2 !important;
+  font-weight: 500 !important;
+  background: transparent !important;
   border: none !important;
+  box-shadow: none !important;
 }
 
-.feedbackButton .sapMBtnInner {
-  background: #0d2346 !important;
-  color: #fff !important;
+.blueTextBtn .sapMBtnInner,
+.blueTextBtn .sapMBtnIcon {
+  color: #0070f2 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }

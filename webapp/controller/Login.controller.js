@@ -9,11 +9,11 @@ sap.ui.define([
     onInit: function () {
       console.log("🚀 Login controller initialized");
       this.clearInputs();
-      // Modelul userData este deja configurat în manifest.json
+
       var oModel = this.getOwnerComponent().getModel("userData");
       if (oModel) {
         console.log("✅ userData model found from manifest");
-        // Verifică dacă datele s-au încărcat
+
         var fnCheckData = function() {
           var data = oModel.getData();
           if (data && data.email) {
@@ -21,11 +21,11 @@ sap.ui.define([
             MessageToast.show("✅ User data loaded successfully!");
           } else {
             console.log("⏳ Waiting for data to load...");
-            setTimeout(fnCheckData, 100); // Încearcă din nou după 100ms
+            setTimeout(fnCheckData, 100);
           }
         };
         fnCheckData();
-        // Setează modelul pe view pentru acces local
+
         this.getView().setModel(oModel, "userData");
       } else {
         console.error("❌ userData model not found in manifest");
@@ -35,9 +35,12 @@ sap.ui.define([
 
     clearInputs: function () {
       try {
-        // Golește doar parola, nu și emailul
+        const savedEmail = localStorage.getItem("savedEmail") || "";
+        this.byId("emailInput").setValue(savedEmail);
         this.byId("passwordInput").setValue("");
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Could not reset inputs:", e);
+      }
     },
 
     onLogin: function () {
@@ -49,10 +52,9 @@ sap.ui.define([
         return;
       }
 
-      // Încearcă să obții modelul din component sau view
       var oModel = this.getOwnerComponent().getModel("userData") || 
                    this.getView().getModel("userData");
-      
+
       if (!oModel) {
         MessageToast.show("User data model not found");
         return;
@@ -66,13 +68,20 @@ sap.ui.define([
         return;
       }
 
-      // Caută utilizatorul cu email și parolă potrivite
       var foundUser = data.find(function(user) {
-        return user.email && user.email.toLowerCase() === emailInput.toLowerCase() && user.password === passwordInput;
+        return user.email && user.email.toLowerCase() === emailInput.toLowerCase()
+          && user.password === passwordInput;
       });
 
       if (foundUser) {
         console.log("✅ Login successful for:", foundUser);
+
+        // Salvează emailul în localStorage
+        localStorage.setItem("savedEmail", emailInput);
+
+        // Șterge orice model anterior și creează unul nou
+        this.getOwnerComponent().setModel(null, "loggedUser");
+
         var userModel = new JSONModel({
           fullName: foundUser.fullName,
           email: foundUser.email,
@@ -82,9 +91,11 @@ sap.ui.define([
           personalNr: foundUser.personalNr,
           fiscalYear: foundUser.fiscalYear
         });
+
         this.getOwnerComponent().setModel(userModel, "loggedUser");
+
         MessageToast.show("Welcome, " + foundUser.fullName + "!");
-        // Navigare în funcție de rol
+
         if (foundUser.role && foundUser.role.toLowerCase() === "manager") {
           this.getOwnerComponent().getRouter().navTo("ManagerDashboard");
         } else {

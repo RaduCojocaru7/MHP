@@ -6,7 +6,15 @@
 
   <Page title="User Dashboard">
     <headerContent>
-      <Button icon="sap-icon://log" text="Logout" press="onLogout" type="Reject"/>
+   <Button
+  id="logoutButton"
+  icon="sap-icon://log"
+  text="Log Out"
+  press="onLogout"
+  type="Transparent"
+  class="pureBlueBtn"/>
+
+
     </headerContent>
 
     <content>
@@ -49,22 +57,31 @@
       </VBox>
 
       <!-- Butoane rotunde -->
-      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
-        <Button
-          icon="sap-icon://document"
-          text="360FB"
-          press="onNavigateTo360FB"
-          class="sapUiTinyMarginEnd roundedButton"
-          width="10rem"
-          iconFirst="true" />
-        <Button
-          icon="sap-icon://business-card"
-          text="PEG"
-          width="10rem"
-          class="roundedButton"
-          iconFirst="true"
-          press="onNavigateToPEG" />
-      </HBox>
+<HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+  <Button
+    icon="sap-icon://document"
+    text="360FB"
+    press="onNavigateTo360FB"
+    class="sapUiTinyMarginEnd roundedButton"
+    width="10rem"
+    iconFirst="true" />
+
+  <Button
+    icon="sap-icon://business-card"
+    text="PEG"
+    press="onNavigateToPEG"
+    class="sapUiTinyMarginEnd roundedButton"
+    width="10rem"
+    iconFirst="true" />
+
+  <Button
+    icon="sap-icon://list"
+    text="PEG List"
+    press="onNavigateToPEGList"
+    class="roundedButton"
+    width="10rem"
+    iconFirst="true" />
+</HBox>
 
     </content>
   </Page>
