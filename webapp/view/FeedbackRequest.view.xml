@@ -1,0 +1,67 @@
+<mvc:View
+  controllerName="fbtool.controller.FeedbackRequest"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page title="Feedback Request">
+    <headerContent>
+      <Button
+        icon="sap-icon://nav-back"
+        text="Back"
+        press="onNavBack"
+        type="Transparent"
+        class="subtleBtn"/>
+    </headerContent>
+
+    <content>
+      <VBox class="sapUiMediumMargin">
+        <VBox class="feedbackCard">
+
+          <!-- Team member selection -->
+          <Label text="Team member"/>
+          <ComboBox
+            id="teamMemberCombo"
+            width="100%"
+            items="{teamMembers>/teamMembers}">
+            <core:Item key="{teamMembers>email}" text="{teamMembers>name}" />
+          </ComboBox>
+
+          <!-- Manager name (readonly) -->
+          <Label text="Manager" class="sapUiTinyMarginTop"/>
+          <Input
+            id="managerInput"
+            value="{loggedUser>/fullName}"
+            enabled="false"
+            width="100%" />
+
+          <!-- Project dropdown -->
+          <Label text="Project" class="sapUiTinyMarginTop"/>
+          <Select id="projectSelect" width="100%">
+            <items>
+              <core:Item key="project1" text="Project 1"/>
+              <core:Item key="project2" text="Project 2"/>
+              <core:Item key="project3" text="Project 3"/>
+            </items>
+          </Select>
+
+          <!-- Feedback text area -->
+          <Label text="Message" class="sapUiTinyMarginTop"/>
+          <TextArea
+            id="feedbackMessage"
+            rows="5"
+            width="100%" />
+
+          <!-- Submit button -->
+          <Button
+            text="Request Feedback"
+            press="onSubmitFeedback"
+            class="sapUiTinyMarginTop feedbackButton"
+            type="Emphasized" />
+
+        </VBox>
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

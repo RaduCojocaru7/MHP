@@ -37,7 +37,11 @@ sap.ui.define([
     },
     onProfileInfoPress: function () {
   this.getOwnerComponent().getRouter().navTo("ProfileInfo");
-  }
+  },
+onNavigateToFeedbackRequest: function () {
+  var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+  oRouter.navTo("FeedbackRequest");
+}
 
   });
 });

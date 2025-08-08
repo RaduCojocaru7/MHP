@@ -68,6 +68,13 @@
           class="roundedButton"
           iconFirst="true"
           press="onNavigateToPEG" />
+        <Button
+          text="Feedback Request"
+          icon="sap-icon://request"
+          press="onNavigateToFeedbackRequest"
+          class="roundedButton"
+          width="10rem" />
+
       </HBox>
 
       <!-- My Team - DOAR la Manager -->

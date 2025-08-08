@@ -124,6 +124,11 @@
           ]
         },
         {
+          "name": "FeedbackRequest",
+          "pattern": "FeedbackRequest",
+          "target": ["TargetFeedbackRequest"]
+        },
+        {
           "name": "PEGRequest",
           "pattern": "PEGRequest",
           "target": ["TargetPEGRequest"]
@@ -188,7 +193,16 @@
           "controlAggregation": "pages",
           "controlId": "app",
           "transition": "slide"
-        }
+        },
+            "TargetFeedbackRequest": {
+        "name": "FeedbackRequest",
+        "viewName": "FeedbackRequest",
+        "viewType": "XML",
+        "viewId": "FeedbackRequest",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide"
+      }
       }
     }
   }

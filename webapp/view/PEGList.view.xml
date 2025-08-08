@@ -14,12 +14,14 @@
     </headerContent>
 
     <content>
-      <SegmentedButton selectionChange="onFilterChange">
-        <items>
-          <SegmentedButtonItem key="Pending" text="Pending"/>
-          <SegmentedButtonItem key="Done" text="Done"/>
-        </items>
-      </SegmentedButton>
+        <SegmentedButton selectionChange="onFilterChange">
+    <items>
+        <SegmentedButtonItem key="All" text="All"/>
+        <SegmentedButtonItem key="Pending" text="Pending"/>
+        <SegmentedButtonItem key="Done" text="Done"/>
+    </items>
+    </SegmentedButton>
+
 
       <List
         items="{peg>/requests}"
@@ -27,7 +29,6 @@
         <StandardListItem
           title="{peg>title}"
           description="{peg>createdDate}"
-          info="{peg>status}"
           infoState="{= ${peg>status} === 'Done' ? 'Success' : 'Warning' }"/>
       </List>
     </content>

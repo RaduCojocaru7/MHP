@@ -12,25 +12,37 @@ sap.ui.define([
             ]
         },
 
-        init() {
-            // call the base component's init function
+        init: function () {
+            // Apelăm init-ul din superclasă
             UIComponent.prototype.init.apply(this, arguments);
 
-            // set the device model
+            // Model pentru device
             this.setModel(models.createDeviceModel(), "device");
 
-            // enable routing
-            this.getRouter().initialize();
-        },
-
-                init: function () {
-                    UIComponent.prototype.init.apply(this, arguments);
-
-            // Model pentru datele userului
-            var oUserModel = new sap.ui.model.json.JSONModel();
+            // Încarcă userData ca model "user"
+            const oUserModel = new sap.ui.model.json.JSONModel();
             oUserModel.loadData("model/userData.json");
             this.setModel(oUserModel, "user");
 
+            // Încarcă userul logat ca model "loggedUser"
+            const oLoggedUserModel = new sap.ui.model.json.JSONModel({
+                fullName: "ALEX POPESCU",
+                email: "alex.popescu@example.com",
+                role: "manager"
+            });
+            this.setModel(oLoggedUserModel, "loggedUser");
+
+            // Simulează echipa managerului ca model "teamMembers"
+            const oTeamModel = new sap.ui.model.json.JSONModel({
+                teamMembers: [
+                    { email: "maria.ionescu@example.com", name: "Maria Ionescu" },
+                    { email: "stefania-maria.maracine@mhp.com", name: "Stefania Maracine" }
+                    // Poți adăuga și alții
+                ]
+            });
+            this.setModel(oTeamModel, "teamMembers");
+
+            // Pornește routing
             this.getRouter().initialize();
         }
     });
