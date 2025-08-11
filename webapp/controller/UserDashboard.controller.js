@@ -46,8 +46,9 @@ sap.ui.define([
     onNavigateToPEG: function () {
       this.getOwnerComponent().getRouter().navTo("PEGRequest");
     },
-        onNavigateToPEGList: function () {
-      this.getOwnerComponent().getRouter().navTo("PEGList");
-    }
+       onNavigateToPEGList: function () {
+  console.log("Navigating to PEGList…");
+  this.getOwnerComponent().getRouter().navTo("PEGList");
+}
   });
 });

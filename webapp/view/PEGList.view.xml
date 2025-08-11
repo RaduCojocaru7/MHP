@@ -1,7 +1,8 @@
 <mvc:View
   controllerName="fbtool.controller.PEGList"
   xmlns:mvc="sap.ui.core.mvc"
-  xmlns="sap.m">
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
 
   <Page title="My PEG List">
     <headerContent>
@@ -14,22 +15,27 @@
     </headerContent>
 
     <content>
-        <SegmentedButton selectionChange="onFilterChange">
-    <items>
-        <SegmentedButtonItem key="All" text="All"/>
-        <SegmentedButtonItem key="Pending" text="Pending"/>
-        <SegmentedButtonItem key="Done" text="Done"/>
-    </items>
-    </SegmentedButton>
+      <!-- Filtru DINAMIC după status (se umple din peg>/statuses) -->
+      <Toolbar class="sapUiSmallMarginBottom sapUiTinyMarginTop">
+        <Label text="Filter by status:" class="sapUiTinyMarginEnd"/>
+        <Select id="statusFilter"
+                width="12rem"
+                selectedKey="{peg>/selectedStatus}"
+                change="onStatusFilterChange"
+                items="{peg>/statuses}">
+          <core:Item key="{peg>key}" text="{peg>text}" />
+        </Select>
+      </Toolbar>
 
-
-      <List
-        items="{peg>/requests}"
-        class="sapUiResponsiveMargin sapUiTinyMarginTop">
+      <!-- Lista (gruparea pe status e aplicată din controller prin Sorter) -->
+      <List id="pegList"
+            items="{peg>/requests}"
+            class="sapUiResponsiveMargin sapUiTinyMarginTop"
+            growing="true"
+            growingScrollToLoad="true">
         <StandardListItem
           title="{peg>title}"
-          description="{peg>createdDate}"
-          infoState="{= ${peg>status} === 'Done' ? 'Success' : 'Warning' }"/>
+          description="{peg>createdDate}"/>
       </List>
     </content>
   </Page>

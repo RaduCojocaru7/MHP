@@ -12,11 +12,7 @@ sap.ui.define([
     },
 
     onNavBack: function () {
-      const oUserModel = this.getOwnerComponent().getModel("loggedUser");
-      const role = oUserModel?.getProperty("/role");
-
-      const sTarget = (role && role.toLowerCase() === "manager") ? "ManagerDashboard" : "UserDashboard";
-      UIComponent.getRouterFor(this).navTo(sTarget);
+      UIComponent.getRouterFor(this).navTo("ManagerDashboard");
     },
 
     onSubmitFeedback: function () {
@@ -30,9 +26,9 @@ sap.ui.define([
         return;
       }
 
-      // Simulează trimiterea
       MessageToast.show("Feedback request sent successfully!");
-      oView.byId("feedbackMessage").setValue(""); // Resetăm mesajul
+      oView.byId("feedbackMessage").setValue("");
+      UIComponent.getRouterFor(this).navTo("ManagerDashboard");
     }
   });
 });

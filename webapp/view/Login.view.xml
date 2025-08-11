@@ -40,7 +40,7 @@
 
         <!-- Butoane -->
         <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
-          <Button id="loginButton" icon="sap-icon://log" text="Log In" type="Transparent" press="onLogin"/>
+          <Button id="loginButton"  text="Log In" type="Transparent" press="onLogin"/>
           <Link id="forgotPasswordLink" text="Forgot password?" press="onForgotPassword" class="forgotPasswordLink"/>
         </HBox>
       </VBox>

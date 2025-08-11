@@ -75,12 +75,13 @@
     iconFirst="true" />
 
   <Button
-    icon="sap-icon://list"
-    text="PEG List"
-    press="onNavigateToPEGList"
-    class="roundedButton"
-    width="10rem"
-    iconFirst="true" />
+  icon="sap-icon://list"
+  text="PEG List"
+  press="onNavigateToPEGList"
+  class="roundedButton"
+  width="10rem"
+  iconFirst="true" />
+
 </HBox>
 
     </content>
