@@ -1,49 +1,34 @@
 sap.ui.define([
-    "sap/ui/core/UIComponent",
-    "fbtool/model/models"
-], (UIComponent, models) => {
-    "use strict";
+  "sap/ui/core/UIComponent",
+  "fbtool/model/models",
+  "sap/ui/model/odata/v2/ODataModel"
+], (UIComponent, models, ODataModel) => {
+  "use strict";
 
-    return UIComponent.extend("fbtool.Component", {
-        metadata: {
-            manifest: "json",
-            interfaces: [
-                "sap.ui.core.IAsyncContentCreation"
-            ]
-        },
+  return UIComponent.extend("fbtool.Component", {
+    metadata: { manifest: "json", interfaces: ["sap.ui.core.IAsyncContentCreation"] },
 
-        init: function () {
-            // Apelăm init-ul din superclasă
-            UIComponent.prototype.init.apply(this, arguments);
+    init: function () {
+      UIComponent.prototype.init.apply(this, arguments);
+      this.setModel(models.createDeviceModel(), "device");
 
-            // Model pentru device
-            this.setModel(models.createDeviceModel(), "device");
+      // Fallback: dacă modelul din manifest nu e creat, îl creăm aici
+      var oDefault = this.getModel();
+      var oNamed   = this.getModel("mainService");
 
-            // Încarcă userData ca model "user"
-            const oUserModel = new sap.ui.model.json.JSONModel();
-            oUserModel.loadData("model/userData.json");
-            this.setModel(oUserModel, "user");
+      if (!oDefault || !oNamed) {
+        var oOData = new ODataModel({
+          serviceUrl: "/sap/opu/odata/sap/ZARC_FEEDBACK_TOOL_SRV/",
+          defaultBindingMode: "TwoWay",
+          useBatch: true
+        });
 
-            // Încarcă userul logat ca model "loggedUser"
-            const oLoggedUserModel = new sap.ui.model.json.JSONModel({
-                fullName: "ALEX POPESCU",
-                email: "alex.popescu@example.com",
-                role: "manager"
-            });
-            this.setModel(oLoggedUserModel, "loggedUser");
+        if (!oDefault)     { this.setModel(oOData); }                 // default
+        if (!oNamed)       { this.setModel(oOData, "mainService"); }  // named
+        // console.info("ODataModel fallback set (default + mainService)");
+      }
 
-            // Simulează echipa managerului ca model "teamMembers"
-            const oTeamModel = new sap.ui.model.json.JSONModel({
-                teamMembers: [
-                    { email: "maria.ionescu@example.com", name: "Maria Ionescu" },
-                    { email: "stefania-maria.maracine@mhp.com", name: "Stefania Maracine" }
-                    // Poți adăuga și alții
-                ]
-            });
-            this.setModel(oTeamModel, "teamMembers");
-
-            // Pornește routing
-            this.getRouter().initialize();
-        }
-    });
+      this.getRouter().initialize();
+    }
+  });
 });

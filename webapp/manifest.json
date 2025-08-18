@@ -4,9 +4,7 @@
     "id": "fbtool",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "0.0.1"
-    },
+    "applicationVersion": { "version": "0.0.1" },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
     "resources": "resources.json",
@@ -14,169 +12,105 @@
       "id": "@sap/generator-fiori:basic",
       "version": "1.18.3",
       "toolsId": "07a10b4b-f6af-4ccd-9c88-0dac23e81a2d"
+    },
+    "dataSources": {
+      "ZARC_FEEDBACK_TOOL_SRV": {
+        "uri": "/sap/opu/odata/sap/ZARC_FEEDBACK_TOOL_SRV/",
+        "type": "OData",
+        "settings": { "odataVersion": "2.0" }
+      }
     }
   },
+
   "sap.ui": {
     "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
+    "icons": { "icon": "", "favIcon": "", "phone": "", "phone@2": "", "tablet": "", "tablet@2": "" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
   },
+
   "sap.ui5": {
     "flexEnabled": false,
-    "rootView": {
-      "viewName": "fbtool.view.App",
-      "type": "XML",
-      "id": "App",
-      "async": true
-    },
+    "rootView": { "viewName": "fbtool.view.App", "type": "XML", "id": "App", "async": true },
     "dependencies": {
       "minUI5Version": "1.138.1",
-      "libs": {
-        "sap.m": {},
-        "sap.ui.core": {}
-      }
+      "libs": { "sap.m": {}, "sap.ui.core": {} }
     },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
+    "contentDensities": { "compact": true, "cozy": true },
+
     "models": {
+      "": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "dataSource": "ZARC_FEEDBACK_TOOL_SRV",
+        "preload": true,
+        "settings": {
+          "json": true,
+          "loadMetadataAsync": true,
+          "defaultBindingMode": "TwoWay",
+          "useBatch": true
+        }
+      },
+      "mainService": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "dataSource": "ZARC_FEEDBACK_TOOL_SRV",
+        "settings": {
+          "json": true,
+          "loadMetadataAsync": true,
+          "defaultBindingMode": "TwoWay",
+          "useBatch": true
+        }
+      },
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "fbtool.i18n.i18n"
-        }
-      },
-      "userData": {
-        "type": "sap.ui.model.json.JSONModel",
-        "uri": "model/userData.json"
-      },
-        "pegList": {
-  "type": "sap.ui.model.json.JSONModel",
-  "uri": "model/pegList.json"
+        "settings": { "bundleName": "fbtool.i18n.i18n" }
       }
     },
-      "resources": {
-        "css": [
-          {
-            "uri": "css/style.css"
-          }
-        ]
-      },
+
+    "resources": {
+      "css": [{ "uri": "css/style.css" }]
+    },
+
     "routing": {
       "config": {
-  "routerClass": "sap.m.routing.Router",
-  "controlAggregation": "pages",
-  "controlId": "app",
-  "transition": "slide",
-  "type": "View",
-  "viewType": "XML",
-  "path": "fbtool.view",
-  "async": true
-},
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "fbtool.view",
+        "async": true
+      },
       "routes": [
-        {
-          "name": "Login",
-          "pattern": "",
-          "target": ["TargetLogin"]
-        },
-        {
-          "name": "ForgotPassword",
-          "pattern": "ForgotPassword",
-          "target": ["TargetForgotPassword"]
-        },
-        {
-          "name": "UserDashboard",
-          "pattern": "UserDashboard",
-          "target": ["TargetUserDashboard"]
-        },
-        {
-          "pattern": "ProfileInfo",
-          "name": "ProfileInfo",
-          "target": "ProfileInfo"
-        },
-        {
-          "name": "ManagerDashboard",
-          "pattern": "ManagerDashboard",
-          "target": ["TargetManagerDashboard"]
-        },
-        {
-          "pattern": "fb360",
-          "name": "fb360",
-          "target": "fb360"
-        },
-        {
-          "name": "ProfileInfo",
-          "pattern": "ProfileInfo",
-          "target": [
-            "TargetProfileInfo"
-          ]
-        },
-        {
-          "name": "FeedbackRequest",
-          "pattern": "FeedbackRequest",
-          "target": ["TargetFeedbackRequest"]
-        },
-        {
-          "name": "PEGRequest",
-          "pattern": "PEGRequest",
-          "target": ["TargetPEGRequest"]
-        },
-        {
-          "name": "PEGList",
-          "pattern": "PEGList",
-          "target": ["TargetPEGList"]
-        }
-
+        { "name": "Login", "pattern": "", "target": ["TargetLogin"] },
+        { "name": "ForgotPassword", "pattern": "ForgotPassword", "target": ["TargetForgotPassword"] },
+        { "name": "UserDashboard", "pattern": "UserDashboard", "target": ["TargetUserDashboard"] },
+        { "name": "ManagerDashboard", "pattern": "ManagerDashboard", "target": ["TargetManagerDashboard"] },
+        { "name": "fb360", "pattern": "fb360", "target": ["fb360"] },
+        { "name": "FeedbackRequest", "pattern": "FeedbackRequest", "target": ["TargetFeedbackRequest"] },
+        { "name": "PEGRequest", "pattern": "PEGRequest", "target": ["TargetPEGRequest"] },
+        { "name": "PEGList", "pattern": "PEGList", "target": ["TargetPEGList"] },
+        { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] }
       ],
       "targets": {
-        "TargetLogin": {
-          "id": "Login",
-          "name": "Login"
-        },
-                "ProfileInfo": {
-          "viewName": "ProfileInfo",
-          "viewLevel": 2
-        },
-        "TargetForgotPassword": {
-          "id": "ForgotPassword",
-          "name": "ForgotPassword"
-        },
-        "TargetUserDashboard": {
-          "id": "UserDashboard",
-          "name": "UserDashboard"
-        },
-        "TargetManagerDashboard": {
-          "id": "ManagerDashboard",
-          "name": "ManagerDashboard"
-        },
+        "TargetLogin": { "id": "Login", "name": "Login" },
+        "TargetForgotPassword": { "id": "ForgotPassword", "name": "ForgotPassword" },
+        "TargetUserDashboard": { "id": "UserDashboard", "name": "UserDashboard" },
+        "TargetManagerDashboard": { "id": "ManagerDashboard", "name": "ManagerDashboard" },
         "fb360": {
           "viewName": "360FB",
           "viewType": "XML",
           "viewId": "fb360",
           "controlAggregation": "pages",
-          "controlId": "app", 
+          "controlId": "app",
           "transition": "slide"
         },
-        
-                "TargetProfileInfo": {
+        "TargetProfileInfo": {
           "name": "ProfileInfo",
           "viewName": "ProfileInfo",
           "viewType": "XML",
           "id": "ProfileInfo"
         },
-                "TargetPEGRequest": {
+        "TargetPEGRequest": {
           "name": "PEGRequest",
           "viewName": "PEGRequest",
           "viewType": "XML",
@@ -185,7 +119,7 @@
           "controlId": "app",
           "transition": "slide"
         },
-                "TargetPEGList": {
+        "TargetPEGList": {
           "name": "PEGList",
           "viewName": "PEGList",
           "viewType": "XML",
@@ -194,15 +128,15 @@
           "controlId": "app",
           "transition": "slide"
         },
-            "TargetFeedbackRequest": {
-        "name": "FeedbackRequest",
-        "viewName": "FeedbackRequest",
-        "viewType": "XML",
-        "viewId": "FeedbackRequest",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "transition": "slide"
-      }
+        "TargetFeedbackRequest": {
+          "name": "FeedbackRequest",
+          "viewName": "FeedbackRequest",
+          "viewType": "XML",
+          "viewId": "FeedbackRequest",
+          "controlAggregation": "pages",
+          "controlId": "app",
+          "transition": "slide"
+        }
       }
     }
   }

@@ -1,0 +1,75 @@
+<mvc:View
+  controllerName="fbtool.controller.HRDashboard"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page title="HR Dashboard">
+    <headerContent>
+      <Button
+        id="logoutButtonHR"
+        icon="sap-icon://log"
+        text="Log Out"
+        press="onLogout"
+        type="Transparent"
+        class="pureBlueBtn"/>
+    </headerContent>
+
+    <content>
+
+      <!-- Card user info -->
+      <VBox class="sapUiMediumMargin">
+        <VBox class="sapUiSmallMargin sapUiContentPadding userCard">
+
+          <!-- Info utilizator pe două coloane -->
+          <HBox justifyContent="SpaceBetween" alignItems="Start" class="sapUiTinyMarginBottom">
+
+            <!-- Stânga: avatar, nume, email -->
+            <HBox alignItems="Center">
+              <Avatar displaySize="L" src="sap-icon://employee" class="sapUiTinyMarginEnd"/>
+              <VBox>
+                <HBox alignItems="Center">
+                  <Text text="{= ${user>/fullName} ? ${user>/fullName}.toUpperCase() : '' }" class="userNameCaps sapUiSmallMarginEnd"/>
+                  <Button
+                    text="Profile Info"
+                    icon="sap-icon://hint"
+                    type="Transparent"
+                    press="onProfileInfoPress"
+                    class="profileInfoBtn subtleBtn sapUiTinyMarginBottom"/>
+                </HBox>
+                <Text text="{= 'Email: ' + (${user>/email} || '') }" class="sapUiTinyMarginTop sapUiSmallFont"/>
+              </VBox>
+            </HBox>
+
+            <!-- Dreapta: info -->
+            <VBox alignItems="End" class="sapUiTinyMarginBegin">
+              <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+              <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+              <Text text="Business Area: {user>/businessArea}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+            </VBox>
+          </HBox>
+
+        </VBox>
+      </VBox>
+
+      <!-- Butoane rotunde -->
+      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+        <Button
+          icon="sap-icon://list"
+          text="PEG List"
+          press="onNavigateToPEGList"
+          class="sapUiTinyMarginEnd roundedButton"
+          width="10rem"
+          iconFirst="true" />
+        <Button
+          icon="sap-icon://group"
+          text="Employee List"
+          press="onNavigateToEmployeeList"
+          class="roundedButton"
+          width="12rem"
+          iconFirst="true" />
+      </HBox>
+
+    </content>
+  </Page>
+</mvc:View>

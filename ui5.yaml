@@ -4,23 +4,37 @@ specVersion: "3.1"
 metadata:
   name: fbtool
 type: application
+
 server:
   customMiddleware:
+    # Proxy către SAP Gateway (OData)
+    - name: ui5-middleware-simpleproxy
+      afterMiddleware: compression
+      mountPath: /sap
+      configuration:
+        baseUri: "http://itsapl0411.mymhp.net:50000/sap"
+        strictSSL: false
+
+    # Proxy către resurse UI5 (CDN)
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertError: false
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+
+    # Live reload
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
         port: 35729
         path: webapp
         delay: 300
+
+    # Preview în FLP (opțional)
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:

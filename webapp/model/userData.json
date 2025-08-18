@@ -42,5 +42,16 @@
     "role": "manager",
     "personalNr": "74829163",
     "fiscalYear": "2025"
+  },
+  {
+    "email": "elena.hr@example.com",
+    "password": "passhr",
+    "fullName": "Elena HR",
+    "careerLevel": "SENIOR HR",
+    "serviceUnit": "HUMAN RESOURCES",
+    "businessArea": "HR MANAGEMENT",
+    "role": "hr",
+    "personalNr": "89237465",
+    "fiscalYear": "2025"
   }
 ]
