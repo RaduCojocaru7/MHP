@@ -2,19 +2,18 @@
   controllerName="fbtool.controller.UserDashboard"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
+  xmlns:f="sap.f"
   displayBlock="true">
 
   <Page title="User Dashboard">
     <headerContent>
-   <Button
-  id="logoutButton"
-  icon="sap-icon://log"
-  text="Log Out"
-  press="onLogout"
-  type="Transparent"
-  class="pureBlueBtn"/>
-
-
+      <Button
+        id="logoutButton"
+        icon="sap-icon://log"
+        text="Log Out"
+        press="onLogout"
+        type="Transparent"
+        class="pureBlueBtn"/>
     </headerContent>
 
     <content>
@@ -28,7 +27,7 @@
 
             <!-- Stânga: avatar, nume, email -->
             <HBox alignItems="Center">
-              <Avatar displaySize="L" src="sap-icon://employee" class="sapUiTinyMarginEnd"/>
+              <f:Avatar displaySize="L" src="sap-icon://employee" class="sapUiTinyMarginEnd"/>
               <VBox>
                 <HBox alignItems="Center">
                   <Text text="{= ${user>/fullName} ? ${user>/fullName}.toUpperCase() : '' }" class="userNameCaps sapUiSmallMarginEnd"/>
@@ -45,8 +44,6 @@
 
             <!-- Dreapta: Profile Info + info user -->
             <VBox alignItems="End" class="sapUiTinyMarginBegin">
-              
-
               <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
               <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
               <Text text="Business Area: {user>/businessArea}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
@@ -57,32 +54,40 @@
       </VBox>
 
       <!-- Butoane rotunde -->
-<HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
-  <Button
-    icon="sap-icon://document"
-    text="360FB"
-    press="onNavigateTo360FB"
-    class="sapUiTinyMarginEnd roundedButton"
-    width="10rem"
-    iconFirst="true" />
+      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+        <Button
+          icon="sap-icon://document"
+          text="360FB"
+          press="onNavigateTo360FB"
+          class="sapUiTinyMarginEnd roundedButton"
+          width="10rem"
+          iconFirst="true" />
 
-  <Button
-    icon="sap-icon://business-card"
-    text="PEG"
-    press="onNavigateToPEG"
-    class="sapUiTinyMarginEnd roundedButton"
-    width="10rem"
-    iconFirst="true" />
+        <Button
+          icon="sap-icon://business-card"
+          text="PEG"
+          press="onNavigateToPEG"
+          class="sapUiTinyMarginEnd roundedButton"
+          width="10rem"
+          iconFirst="true" />
 
-  <Button
-  icon="sap-icon://list"
-  text="PEG List"
-  press="onNavigateToPEGList"
+        <Button
+          icon="sap-icon://list"
+          text="PEG List"
+          press="onNavigateToPEGList"
+          class="roundedButton"
+          width="10rem"
+          iconFirst="true" />
+
+        <!-- noul buton “Feedback List” -->
+       <Button
+  id="btnFeedbackList"
   class="roundedButton"
   width="10rem"
-  iconFirst="true" />
-
-</HBox>
+  icon="sap-icon://list"
+  text="Feedback List"
+  press="onNavFeedbackList"/>
+      </HBox>
 
     </content>
   </Page>

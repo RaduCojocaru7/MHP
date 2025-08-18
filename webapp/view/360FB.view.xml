@@ -2,30 +2,43 @@
   controllerName="fbtool.controller.FB360"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
+  xmlns:core="sap.ui.core"
   displayBlock="true">
 
   <Page title="360 Feedback Page">
     <headerContent>
       <Button icon="sap-icon://nav-back" text="Exit" press="onExit"/>
     </headerContent>
+
     <content>
       <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
         <VBox class="feedbackCard sapUiMediumMargin" width="500px">
           <Title text="Send Feedback 360" level="H3" class="sapUiSmallMarginBottom"/>
 
-          <Label text="Name" labelFor="nameInput"/>
-          <Input id="nameInput" placeholder="User" width="100%" class="sapUiSmallMarginBottom"/>
+          <!-- User: ComboBox (afiseaza NAME, cheia este USER_ID) -->
+          <Label text="User" labelFor="userCombo"/>
+          <ComboBox
+            id="userCombo"
+            width="100%"
+            placeholder="Type to search user"
+            showClearIcon="true"
+            items="{
+              path: 'mainService>/UserSet',
+              parameters: { $select: 'USER_ID,NAME' }
+            }">
+            <core:Item key="{mainService>USER_ID}" text="{mainService>NAME}" />
+          </ComboBox>
 
           <Label text="Project" labelFor="projectCombo"/>
           <ComboBox id="projectCombo" width="100%" class="sapUiSmallMarginBottom">
-            <core:Item key="gold" text="Gold" xmlns:core="sap.ui.core"/>
+            <core:Item key="gold" text="Gold"/>
           </ComboBox>
 
           <Label text="Feedback type" labelFor="typeCombo"/>
           <ComboBox id="typeCombo" width="100%" class="sapUiSmallMarginBottom">
-            <core:Item key="tech" text="Technical Skills" xmlns:core="sap.ui.core"/>
-            <core:Item key="soft" text="Soft Skills" xmlns:core="sap.ui.core"/>
-            <core:Item key="other" text="Other Skills" xmlns:core="sap.ui.core"/>
+            <core:Item key="tech" text="Technical Skills"/>
+            <core:Item key="soft" text="Soft Skills"/>
+            <core:Item key="other" text="Other Skills"/>
           </ComboBox>
 
           <Label text="Feedback" labelFor="feedbackText"/>

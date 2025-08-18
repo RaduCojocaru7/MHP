@@ -2,6 +2,7 @@
   controllerName="fbtool.controller.ManagerDashboard"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
+  xmlns:f="sap.f"
   displayBlock="true">
 
   <Page title="Manager Dashboard">
@@ -25,7 +26,7 @@
 
             <!-- Stânga: Avatar + nume -->
             <HBox alignItems="Center">
-              <Avatar displaySize="L" src="sap-icon://manager" class="sapUiTinyMarginEnd" />
+             <f:Avatar displaySize="L" src="sap-icon://manager" class="sapUiTinyMarginEnd" />
               <VBox>
                 <HBox alignItems="Center">
                   <Text text="{= ${user>/fullName} ? ${user>/fullName}.toUpperCase() : '' }"
@@ -74,6 +75,13 @@
           press="onNavigateToFeedbackRequest"
           class="roundedButton"
           width="10rem" />
+          <Button
+  id="btnFeedbackList"
+  class="roundedButton"
+  width="10rem"
+  icon="sap-icon://list"
+  text="Feedback List"
+  press="onNavFeedbackList"/>
 
       </HBox>
 

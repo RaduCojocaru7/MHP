@@ -1,0 +1,45 @@
+<mvc:View
+  controllerName="fbtool.controller.FeedbackList"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Page id="feedbackListPage">
+    <!-- Header: Back în dreapta + titlu -->
+    <customHeader>
+      <Toolbar>
+        <Title text="My Feedback List" />
+        <ToolbarSpacer/>
+        <Button text="Back" icon="sap-icon://nav-back" type="Transparent" press=".onNavBack"/>
+      </Toolbar>
+    </customHeader>
+
+    <content>
+      <!-- Filtru după STATUS (Select identic ca în PEGList) -->
+      <Toolbar class="sapUiSmallMarginBottom sapUiTinyMarginTop">
+        <Label text="Filter by status:" class="sapUiTinyMarginEnd"/>
+        <Select id="statusFilter"
+                width="12rem"
+                selectedKey="{feedbackList>/selectedStatus}"
+                change=".onStatusFilterChange"
+                items="{feedbackList>/statuses}">
+          <core:Item key="{feedbackList>key}" text="{feedbackList>text}" />
+        </Select>
+      </Toolbar>
+
+      <!-- Lista (items din feedbackList>/items). Gruparea/sortarea se face în controller -->
+      <List id="lstFeedback"
+            class="sapUiResponsiveMargin sapUiTinyMarginTop"
+            items="{feedbackList>/items}"
+            growing="true"
+            growingScrollToLoad="true"
+            noDataText="No data">
+        <StandardListItem
+          title="{feedbackList>title}"
+          description="{feedbackList>createdAt}"
+          info="{feedbackList>status}"
+          infoState="Information"/>
+      </List>
+    </content>
+  </Page>
+</mvc:View>

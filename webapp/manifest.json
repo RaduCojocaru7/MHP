@@ -89,6 +89,7 @@
         { "name": "FeedbackRequest", "pattern": "FeedbackRequest", "target": ["TargetFeedbackRequest"] },
         { "name": "PEGRequest", "pattern": "PEGRequest", "target": ["TargetPEGRequest"] },
         { "name": "PEGList", "pattern": "PEGList", "target": ["TargetPEGList"] },
+        { "name": "FeedbackList", "pattern": "FeedbackList", "target": ["TargetFeedbackList"] },
         { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] }
       ],
       "targets": {
@@ -128,16 +129,27 @@
           "controlId": "app",
           "transition": "slide"
         },
-        "TargetFeedbackRequest": {
-          "name": "FeedbackRequest",
-          "viewName": "FeedbackRequest",
-          "viewType": "XML",
-          "viewId": "FeedbackRequest",
-          "controlAggregation": "pages",
-          "controlId": "app",
-          "transition": "slide"
-        }
+        "TargetFeedbackList": {
+  "name": "FeedbackList",
+  "viewName": "FeedbackList",
+  "viewType": "XML",
+  "viewId": "FeedbackList",
+  "controlAggregation": "pages",
+  "controlId": "app",
+  "transition": "slide"
+},
+
+"TargetFeedbackRequest": {
+  "name": "FeedbackRequest",
+  "viewName": "FeedbackRequest",
+  "viewType": "XML",
+  "viewId": "FeedbackRequest",
+  "controlAggregation": "pages",
+  "controlId": "app",
+  "transition": "slide"
+}
+
       }
     }
-  }
+}
 }

@@ -49,6 +49,9 @@ sap.ui.define([
        onNavigateToPEGList: function () {
   console.log("Navigating to PEGList…");
   this.getOwnerComponent().getRouter().navTo("PEGList");
+  },
+  onNavFeedbackList: function () {
+  this.getOwnerComponent().getRouter().navTo("FeedbackList");
 }
   });
 });
