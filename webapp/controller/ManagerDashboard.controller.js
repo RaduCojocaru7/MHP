@@ -49,6 +49,10 @@ sap.ui.define([
     onNavFeedbackList: function () {
       var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
       oRouter.navTo("FeedbackList");
-    }
+    },
+    onNavigateToMyTeam: function () {
+  this.getOwnerComponent().getRouter().navTo("MyTeam");
+}
+
   });
 });

@@ -90,7 +90,9 @@
         { "name": "PEGRequest", "pattern": "PEGRequest", "target": ["TargetPEGRequest"] },
         { "name": "PEGList", "pattern": "PEGList", "target": ["TargetPEGList"] },
         { "name": "FeedbackList", "pattern": "FeedbackList", "target": ["TargetFeedbackList"] },
-        { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] }
+        { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] },
+        { "pattern": "MyTeam", "name": "MyTeam", "target": ["MyTeam"] }
+
       ],
       "targets": {
         "TargetLogin": { "id": "Login", "name": "Login" },
@@ -138,6 +140,12 @@
   "controlId": "app",
   "transition": "slide"
 },
+
+"MyTeam": {
+          "viewType": "XML",
+          "viewName": "MyTeam",
+          "viewId": "MyTeam"
+        },
 
 "TargetFeedbackRequest": {
   "name": "FeedbackRequest",
