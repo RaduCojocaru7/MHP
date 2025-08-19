@@ -2,44 +2,58 @@
   controllerName="fbtool.controller.FeedbackList"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
-  xmlns:core="sap.ui.core">
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
 
-  <Page id="feedbackListPage">
-    <!-- Header: Back în dreapta + titlu -->
-    <customHeader>
-      <Toolbar>
-        <Title text="My Feedback List" />
-        <ToolbarSpacer/>
-        <Button text="Back" icon="sap-icon://nav-back" type="Transparent" press=".onNavBack"/>
-      </Toolbar>
-    </customHeader>
+  <Page title="Feedback List">
+    <headerContent>
+      <Button icon="sap-icon://nav-back" text="Back" press="onBack"/>
+    </headerContent>
 
     <content>
-      <!-- Filtru după STATUS (Select identic ca în PEGList) -->
-      <Toolbar class="sapUiSmallMarginBottom sapUiTinyMarginTop">
-        <Label text="Filter by status:" class="sapUiTinyMarginEnd"/>
-        <Select id="statusFilter"
-                width="12rem"
-                selectedKey="{feedbackList>/selectedStatus}"
-                change=".onStatusFilterChange"
-                items="{feedbackList>/statuses}">
-          <core:Item key="{feedbackList>key}" text="{feedbackList>text}" />
-        </Select>
-      </Toolbar>
+      <VBox class="sapUiSmallMargin">
+        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
 
-      <!-- Lista (items din feedbackList>/items). Gruparea/sortarea se face în controller -->
-      <List id="lstFeedback"
-            class="sapUiResponsiveMargin sapUiTinyMarginTop"
-            items="{feedbackList>/items}"
-            growing="true"
-            growingScrollToLoad="true"
-            noDataText="No data">
-        <StandardListItem
-          title="{feedbackList>title}"
-          description="{feedbackList>createdAt}"
-          info="{feedbackList>status}"
-          infoState="Information"/>
-      </List>
+          <!-- Dropdown Received / Sent -->
+          <Select id="modeSelect"
+                  selectedKey="received"
+                  change="onModeSelectChange"
+                  width="12rem">
+            <core:Item key="received" text="Received"/>
+            <core:Item key="sent"     text="Sent"/>
+          </Select>
+
+          <!-- Dacă vrei search, decomentezi în controller onSearch și aici:
+          <SearchField id="search" width="50%" placeholder="Search feedback text..."
+                       liveChange="onSearch" search="onSearch" clear="onSearch"/>
+          -->
+        </HBox>
+
+        <List id="fbList"
+              items="{ path: 'mainService>/FeedbackSet' }"
+              growing="true"
+              growingScrollToLoad="true"
+              noDataText="No feedback found.">
+          <items>
+            <ObjectListItem
+              title="{mainService>INPUT_TEXT}"
+              intro="{ path: 'mainService>SEND_DATE', formatter: '.fmtDate' }">
+              <attributes>
+                <ObjectAttribute title="From"
+                  text="{ path: 'mainService>FROM_USER_ID', formatter: '.fmtUserName' }"/>
+                <ObjectAttribute title="To"
+                  text="{ path: 'mainService>TO_USER_ID', formatter: '.fmtUserName' }"/>
+                <!-- aici afișăm numele tipului, nu ID-ul -->
+                <ObjectAttribute title="Type"
+                  text="{ path: 'mainService>FB_TYPE_ID', formatter: '.fmtTypeName' }"/>
+                <!-- aici afișăm numele proiectului, nu ID-ul -->
+                <ObjectAttribute title="Project"
+                  text="{ path: 'mainService>PROJ_ID', formatter: '.fmtProjName' }"/>
+              </attributes>
+            </ObjectListItem>
+          </items>
+        </List>
+      </VBox>
     </content>
   </Page>
 </mvc:View>

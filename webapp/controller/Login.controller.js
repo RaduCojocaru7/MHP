@@ -14,13 +14,9 @@ sap.ui.define([
     },
 
     getLogoSrc: function () {
-  // Rezolvare corectă în FLP și local
-  var s = sap.ui.require.toUrl("fbtool/img/mhp-logo.png");
-  // (opțional) debug:
-  // console.log("Logo path:", s);
-  return s;
-}
-,
+      return sap.ui.require.toUrl("fbtool/img/mhp-logo.png");
+    },
+
     // păstrează emailul salvat, golește parola
     clearInputs: function () {
       try {
@@ -49,21 +45,17 @@ sap.ui.define([
         return;
       }
 
-      // în tabel/email OData e cu uppercase → normalizează emailul la uppercase
       var sEmailUpper = sEmail.toUpperCase();
 
-      // ia modelul OData: default sau denumit "mainService"
       var oModel = this.getOwnerComponent().getModel() ||
                    this.getOwnerComponent().getModel("mainService");
 
       if (!oModel) {
         MessageToast.show("OData model not available.");
-        // debug ajutător:
-        console.error("No OData model (default or 'mainService'). Check manifest & ui5-local.yaml proxy.");
+        console.error("No OData model (default or 'mainService').");
         return;
       }
 
-      // filtre EXACT pe numele proprietăților din $metadata (UPPERCASE)
       var aFilters = [
         new Filter("EMAIL",    FilterOperator.EQ, sEmailUpper),
         new Filter("PASSWORD", FilterOperator.EQ, sPass)
@@ -72,7 +64,7 @@ sap.ui.define([
       BusyIndicator.show(0);
       oModel.read("/UserSet", {
         filters: aFilters,
-        urlParameters: { "$top": 1 }, // e suficient primul match
+        urlParameters: { "$top": 1 },
         success: function (oData) {
           BusyIndicator.hide();
           var aRes = oData && oData.results ? oData.results : [];
@@ -83,20 +75,28 @@ sap.ui.define([
 
           var u = aRes[0]; // utilizatorul găsit
 
-          // setează modelul "loggedUser" pe care îl folosesc dashboard-urile tale
+          // setează modelul "loggedUser"
           var oLogged = new JSONModel({
+            user_id:      u.USER_ID,      // ← foarte important pentru FROM_USER_ID
             fullName:     u.NAME,
             email:        u.EMAIL,
             careerLevel:  u.CAREER_LVL,
             serviceUnit:  u.SU,
-            businessArea: u.BUSINESS_AREA || "", // dacă nu există în entitate, îl lăsăm gol
+            businessArea: u.BUSINESS_AREA || "",
             personalNr:   u.PERSONAL_NR,
             fiscalYear:   u.FISCAL_YR,
-            role:         u.ROLE
+            role:         u.ROLE,
+            team_mngr:    u.TEAM_MNGR
           });
           this.getOwnerComponent().setModel(oLogged, "loggedUser");
 
-          try { window.localStorage.setItem("savedEmail", u.EMAIL); } catch (e) {}
+          // cache local
+          try {
+            window.localStorage.setItem("savedEmail", u.EMAIL);
+            window.localStorage.setItem("loggedUserId", u.USER_ID);
+            window.localStorage.setItem("loggedEmail", u.EMAIL);
+          } catch (e) {}
+
           this.clearInputs();
           MessageToast.show("Welcome, " + (u.NAME || "user") + "!");
 
@@ -119,6 +119,7 @@ sap.ui.define([
     }
   });
 });
+
 // sap.ui.define([
 //   "sap/ui/core/mvc/Controller",
 //   "sap/ui/model/json/JSONModel",
