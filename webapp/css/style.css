@@ -102,3 +102,29 @@
   border: none !important;
   box-shadow: none !important;
 }
+
+/* Logo centrat în cardul de login */
+.loginLogo {
+  display: block;
+  margin: 6px auto 18px auto;  /* sus | dreapta | jos | stanga */
+  max-width: 180px;
+  height: auto;
+  filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.12));
+}
+
+/* (opțional) logo foarte discret pe fundalul paginii de login */
+.dark-blue-background.login-bg-image {
+  position: relative;
+  overflow: hidden;
+}
+.dark-blue-background.login-bg-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../img/mhp-logo.png"); /* sau un alt hero image */
+  background-repeat: no-repeat;
+  background-position: center 10%;
+  background-size: 220px auto;
+  opacity: 0.08;            /* discret */
+  pointer-events: none;     /* nu blochează click-urile */
+}

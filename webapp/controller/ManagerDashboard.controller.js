@@ -35,13 +35,20 @@ sap.ui.define([
     onNavigateToPEG: function () {
       this.getOwnerComponent().getRouter().navTo("PEGRequest");
     },
-    onProfileInfoPress: function () {
-  this.getOwnerComponent().getRouter().navTo("ProfileInfo");
-  },
-onNavigateToFeedbackRequest: function () {
-  var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-  oRouter.navTo("FeedbackRequest");
-}
 
+    onProfileInfoPress: function () {
+      this.getOwnerComponent().getRouter().navTo("ProfileInfo");
+    },
+
+    onNavigateToFeedbackRequest: function () {
+      var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+      oRouter.navTo("FeedbackRequest");
+    },
+
+
+    onNavFeedbackList: function () {
+      var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+      oRouter.navTo("FeedbackList");
+    }
   });
 });

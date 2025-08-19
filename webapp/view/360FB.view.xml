@@ -15,7 +15,7 @@
         <VBox class="feedbackCard sapUiMediumMargin" width="500px">
           <Title text="Send Feedback 360" level="H3" class="sapUiSmallMarginBottom"/>
 
-          <!-- User: ComboBox (afiseaza NAME, cheia este USER_ID) -->
+          <!-- User: afișează doar NAME; key = USER_ID -->
           <Label text="User" labelFor="userCombo"/>
           <ComboBox
             id="userCombo"
@@ -29,9 +29,19 @@
             <core:Item key="{mainService>USER_ID}" text="{mainService>NAME}" />
           </ComboBox>
 
+          <!-- Project: filtrat automat după USER_ID selectat; cu X + type-ahead -->
           <Label text="Project" labelFor="projectCombo"/>
-          <ComboBox id="projectCombo" width="100%" class="sapUiSmallMarginBottom">
-            <core:Item key="gold" text="Gold"/>
+          <ComboBox
+            id="projectCombo"
+            width="100%"
+            placeholder="Type to search project"
+            showClearIcon="true"
+            class="sapUiSmallMarginBottom"
+            items="{
+              path: 'mainService>/User_ProjectsSet',
+              parameters: { $select: 'USER_ID,PROJ_ID,PROJ_NAME' }
+            }">
+            <core:Item key="{mainService>PROJ_ID}" text="{mainService>PROJ_NAME}" />
           </ComboBox>
 
           <Label text="Feedback type" labelFor="typeCombo"/>
