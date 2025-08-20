@@ -8,7 +8,7 @@
 
   <Page title="User Profile" showHeader="true">
     
-    <!-- Butonul de Back în colțul din dreapta sus -->
+    <!-- Back Button -->
     <headerContent>
       <Button
         icon="sap-icon://nav-back"
@@ -31,7 +31,7 @@
 
         <VBox class="sapUiMediumMargin" alignItems="Center">
 
-          <f:Avatar
+          <Avatar
             displaySize="L"
             src="sap-icon://employee"
             class="sapUiSmallMarginBottom"/>
@@ -53,17 +53,17 @@
 
             <HBox alignItems="Center" class="sapUiTinyMarginBottom">
               <core:Icon src="sap-icon://employee-pane" size="1.2rem" class="sapUiTinyMarginEnd"/>
-              <Text text="Career Level: {user>/careerLevel}"/>
+              <Text text="Role: {user>/role}"/>
             </HBox>
 
             <HBox alignItems="Center" class="sapUiTinyMarginBottom">
-              <core:Icon src="sap-icon://business-objects-experience" size="1.2rem" class="sapUiTinyMarginEnd"/>
-              <Text text="Business Area: {user>/businessArea}"/>
+              <core:Icon src="sap-icon://employee-pane" size="1.2rem" class="sapUiTinyMarginEnd"/>
+              <Text text="Career level: {user>/careerLevel}"/>
             </HBox>
 
             <HBox alignItems="Center" class="sapUiTinyMarginBottom">
               <core:Icon src="sap-icon://calendar" size="1.2rem" class="sapUiTinyMarginEnd"/>
-              <Text text="Fiscal Year: {user>/fiscalYear}"/>
+              <Text text="Fiscal Year: {path: 'user>/fiscalYear', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'yyyy'}}"/>
             </HBox>
 
           </VBox>

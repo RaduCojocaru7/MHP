@@ -10,22 +10,51 @@ sap.ui.define([
       if (oUserModel) {
         this.getView().setModel(oUserModel, "user");
         this.getView().getModel("user").refresh(true);
-        console.log("✅ Manager dashboard initialized");
+        console.log("Manager dashboard initialized");
       } else {
-        console.error("❌ No manager logged in, redirecting to login...");
+        console.error("No manager logged in, redirecting to login...");
         this.getOwnerComponent().getRouter().navTo("Login");
       }
     },
 
     onLogout: function () {
-      this.getOwnerComponent().setModel(null, "loggedUser");
 
+      this.getOwnerComponent().setModel(null, "loggedUser");
+      this.getView().setModel(null, "user");
+  
+      try {
+        window.localStorage.removeItem("savedEmail");
+        console.log("Cleared saved email from localStorage");
+      } catch (e) {
+        console.warn("Could not clear localStorage:", e);
+      }
+      
       var oLoginView = this.getOwnerComponent().byId("Login");
       if (oLoginView && oLoginView.getController && oLoginView.getController().clearInputs) {
         oLoginView.getController().clearInputs();
+        console.log("Cleared login form inputs");
       }
+      
+      var oComponent = this.getOwnerComponent();
+      var aModelNames = ["", "loggedUser", "user", "userModel"];
+      aModelNames.forEach(function(sModelName) {
+        var oModel = oComponent.getModel(sModelName);
+        if (oModel) {
+          oComponent.setModel(null, sModelName);
+          console.log("Cleared model:", sModelName || "(default)");
+        }
+      });
+      
 
-      this.getOwnerComponent().getRouter().navTo("Login");
+      var oRouter = this.getOwnerComponent().getRouter();
+      window.location.hash = "";
+      
+      setTimeout(function() {
+        oRouter.navTo("Login", {}, true); 
+        console.log("Navigated to Login page");
+      }, 100);
+      
+      console.log("Logout process completed");
     },
 
     onNavigateTo360FB: function () {

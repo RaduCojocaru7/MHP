@@ -24,24 +24,43 @@
               <Text text="Personal Number: {user>/personalNr}" class="sapUiTinyMarginBottom"/>
               <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom"/>
               <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom"/>
-              <Text text="Fiscal Year: {user>/fiscalYear}" class="sapUiTinyMarginBottom"/>
+              <Text text="User ID: {user>/userId}" class="sapUiTinyMarginBottom"/>
+              <Text text="Fiscal Year: {path: 'user>/fiscalYear', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'yyyy'}}" class="sapUiTinyMarginBottom"/>
             </VBox>
 
             <!-- PEG Request -->
             <VBox width="45%">
               <Title text="PEG Request" level="H4" class="sapUiSmallMarginBottom"/>
+              
               <Label text="Current Date"/>
               <DatePicker value="{peg>/currentDate}" displayFormat="yyyy-MM-dd" editable="false" class="sapUiSmallMarginBottom"/>
 
-              <Label text="Manager"/>
-              <Select items="{peg>/managers}" selectedKey="{peg>/selectedManager}" class="sapUiSmallMarginBottom">
-                <core:Item key="{peg>id}" text="{peg>name}"/>
+              <Label text="Project"/>
+              <Select selectedKey="{peg>/selectedProject}" change="onProjectSelectionChange" forceSelection="false" class="sapUiSmallMarginBottom" items="{peg>/projects}">
+                <core:Item key="{peg>id}" text="{= ${peg>number} + ' - ' + (${peg>name} || 'No Name') }"/>
               </Select>
 
-              <Label text="Project Number"/>
-              <Select items="{peg>/projects}" selectedKey="{peg>/selectedProject}" class="sapUiSmallMarginBottom">
-                <core:Item key="{peg>id}" text="{peg>number}"/>
+              <Label text="Manager (for selected project)"/>
+              <Select selectedKey="{peg>/selectedManager}" forceSelection="false" enabled="{= ${peg>/selectedProject} !== '' }" class="sapUiSmallMarginBottom" items="{peg>/managers}">
+                <core:Item key="{peg>id}" text="{peg>displayText}"/>
               </Select>
+              
+              <Text text="Please select a project first to see available managers" 
+                    visible="{= ${peg>/selectedProject} === '' || ${peg>/selectedProject} === null }" 
+                    class="sapUiTinyFont sapUiTinyMarginBottom"/>
+                    
+              <Text text="No managers assigned to this project" 
+                    visible="{= ${peg>/selectedProject} !== '' &amp;&amp; ${peg>/managers}.length === 1 }" 
+                    class="sapUiTinyFont sapUiTinyMarginBottom"/>
+              
+              <!-- Debug info section -->
+              <VBox class="sapUiTinyMarginTop" visible="false">
+                <Text text="=== DEBUG INFO ===" class="sapUiTinyFont sapUiStrong"/>
+                <Text text="Selected Manager: {peg>/selectedManager}" class="sapUiTinyFont"/>
+                <Text text="Selected Project: {peg>/selectedProject}" class="sapUiTinyFont"/>
+                <Text text="Total managers: {= ${peg>/managers}.length }" class="sapUiTinyFont"/>
+                <Text text="Total projects: {= ${peg>/projects}.length }" class="sapUiTinyFont"/>
+              </VBox>
             </VBox>
 
           </HBox>
@@ -53,6 +72,7 @@
               icon="sap-icon://accept"
               type="Emphasized"
               press="onSendRequest"
+              enabled="{parts: ['peg>/selectedManager', 'peg>/selectedProject'], formatter: '.isFormValid'}"
               class="feedbackButton"/>
           </HBox>
 

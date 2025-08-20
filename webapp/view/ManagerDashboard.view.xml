@@ -26,7 +26,7 @@
 
             <!-- Stânga: Avatar + nume -->
             <HBox alignItems="Center">
-             <f:Avatar displaySize="L" src="sap-icon://manager" class="sapUiTinyMarginEnd" />
+             <Avatar displaySize="L" src="sap-icon://manager" class="sapUiTinyMarginEnd" />
               <VBox>
                 <HBox alignItems="Center">
                   <Text text="{= ${user>/fullName} ? ${user>/fullName}.toUpperCase() : '' }"
@@ -46,7 +46,6 @@
             <VBox alignItems="End" class="sapUiTinyMarginBegin">
               <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont" />
               <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont" />
-              <Text text="Business Area: {user>/businessArea}" class="sapUiTinyMarginBottom sapUiSmallFont" />
             </VBox>
           </HBox>
 
@@ -76,13 +75,12 @@
           class="roundedButton"
           width="10rem" />
           <Button
-  id="btnFeedbackList"
-  class="roundedButton"
-  width="10rem"
-  icon="sap-icon://list"
-  text="Feedback List"
-  press="onNavFeedbackList"/>
-
+                id="btnFeedbackList_mngr"
+                class="roundedButton"
+                width="10rem"
+                icon="sap-icon://list"
+                text="Feedback List"
+                press="onNavFeedbackList"/>
       </HBox>
 
       <!-- My Team - DOAR la Manager -->
