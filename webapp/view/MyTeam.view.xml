@@ -1,0 +1,40 @@
+<mvc:View
+  controllerName="fbtool.controller.MyTeam"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page title="My Team">
+    <headerContent>
+      <Button icon="sap-icon://nav-back" text="Back" press="onBack"/>
+    </headerContent>
+
+    <content>
+      <VBox class="sapUiSmallMargin">
+
+        <Table id="teamTable"
+               items="{ path: 'mainService>/UserSet' }"
+               growing="true"
+               growingScrollToLoad="true"
+               noDataText="No team members found.">
+          <columns>
+            <Column><Text text="Name"/></Column>
+            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Email"/></Column>
+            <!-- <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Role"/></Column>
+            <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Career Level"/></Column> -->
+          </columns>
+
+          <items>
+            <ColumnListItem type="Inactive">
+              <ObjectIdentifier title="{mainService>NAME}" />
+              <Text text="{mainService>EMAIL}"/>
+              <Text text="{mainService>ROLE}"/>
+              <Text text="{mainService>CAREER_LVL}"/>
+            </ColumnListItem>
+          </items>
+        </Table>
+
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

@@ -88,12 +88,16 @@ sap.ui.define([
       var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
       oRouter.navTo("FeedbackList");
     },
+    onNavigateToMyTeam: function () {
+  this.getOwnerComponent().getRouter().navTo("MyTeam");
+    },
 
     onExit: function() {
       var oRouter = this.getOwnerComponent().getRouter();
       if (oRouter && oRouter.getRoute("ManagerDashboard")) {
         oRouter.getRoute("ManagerDashboard").detachPatternMatched(this._onRouteMatched, this);
       }
-    }
+}
+
   });
 });

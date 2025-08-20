@@ -31,25 +31,36 @@
 
           <!-- Project: filtrat automat după USER_ID selectat; cu X + type-ahead -->
           <Label text="Project" labelFor="projectCombo"/>
-          <ComboBox
-            id="projectCombo"
-            width="100%"
-            placeholder="Type to search project"
-            showClearIcon="true"
-            class="sapUiSmallMarginBottom"
-            items="{
-              path: 'mainService>/User_ProjectsSet',
-              parameters: { $select: 'USER_ID,PROJ_ID,PROJ_NAME' }
-            }">
-            <core:Item key="{mainService>PROJ_ID}" text="{mainService>PROJ_NAME}" />
-          </ComboBox>
+<ComboBox
+  id="projectCombo"
+  width="100%"
+  showClearIcon="true"
+  placeholder="Type to search project"
+  items="{
+    path: 'mainService>/User_ProjectsSet',
+    parameters: { $select: 'USER_ID,PROJ_ID,PROJ_NAME' }
+  }">
+  <core:Item xmlns:core="sap.ui.core"
+             key="{mainService>PROJ_ID}"
+             text="{mainService>PROJ_NAME}" />
+</ComboBox>
+
+
 
           <Label text="Feedback type" labelFor="typeCombo"/>
-          <ComboBox id="typeCombo" width="100%" class="sapUiSmallMarginBottom">
-            <core:Item key="tech" text="Technical Skills"/>
-            <core:Item key="soft" text="Soft Skills"/>
-            <core:Item key="other" text="Other Skills"/>
-          </ComboBox>
+<ComboBox
+  id="typeCombo"
+  width="100%"
+  showClearIcon="true"
+  items="{
+    path: 'mainService>/Feedback_TypeSet',
+    parameters: { $select: 'FB_TYPE_ID,TYPE' }
+  }">
+<core:Item xmlns:core="sap.ui.core"
+             key="{mainService>FB_TYPE_ID}"
+             text="{mainService>TYPE}" />
+</ComboBox>
+
 
           <Label text="Feedback" labelFor="feedbackText"/>
           <TextArea id="feedbackText" placeholder="Write your feedback here..." rows="5" width="100%" class="sapUiSmallMarginBottom"/>

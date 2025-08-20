@@ -4,13 +4,13 @@ sap.ui.define([
   "sap/m/MessageBox",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator"
-], function(Controller, MessageToast, MessageBox, Filter, FilterOperator) {
+], function (Controller, MessageToast, MessageBox, Filter, FilterOperator) {
   "use strict";
 
   return Controller.extend("fbtool.controller.FB360", {
 
     onInit: function () {
-      // User ComboBox - search by "contains"
+      // USER: type-ahead + schimbarea userului -> filtrează proiectele
       var oUserCB = this.byId("userCombo");
       if (oUserCB && oUserCB.setFilterFunction) {
         oUserCB.setFilterFunction(function (sTerm, oItem) {
@@ -18,11 +18,9 @@ sap.ui.define([
           return s.indexOf((sTerm || "").toLowerCase()) !== -1;
         });
       }
-      if (oUserCB) {
-        oUserCB.attachChange(this._onUserChange, this);
-      }
+      if (oUserCB) { oUserCB.attachChange(this._onUserChange, this); }
 
-      // Project ComboBox
+      // PROJECT: type-ahead + selectionChange + change (robust)
       var oProjCB = this.byId("projectCombo");
       if (oProjCB && oProjCB.setFilterFunction) {
         oProjCB.setFilterFunction(function (sTerm, oItem) {
@@ -31,98 +29,221 @@ sap.ui.define([
         });
       }
       if (oProjCB) {
-        oProjCB.attachChange(function (oEvent) {
-          if (!oEvent.getParameter("selectedItem")) {
-            oProjCB.setSelectedKey("");
-          }
-        });
+        oProjCB.attachSelectionChange(this._onProjectSelectionChange, this);
+        oProjCB.attachChange(this._onProjectChange, this);
+
+        // la init: fără user -> ascunde lista
         var oBinding = oProjCB.getBinding("items");
         if (oBinding) { oBinding.filter([]); }
         oProjCB.setSelectedKey("");
+        oProjCB.setValue("");
       }
     },
 
+    /* === USER === */
     _onUserChange: function () {
       var sUserId = this.byId("userCombo").getSelectedKey();
       var oProjCB = this.byId("projectCombo");
       if (!oProjCB) { return; }
 
-      // reset project
+      // reset proiect când se schimbă userul
       oProjCB.setSelectedKey("");
+      oProjCB.setValue("");
 
-      // filter projects by user
-      var oBinding = oProjCB.getBinding("items");
-      if (oBinding) {
-        if (sUserId) {
-          oBinding.filter([ new Filter("USER_ID", FilterOperator.EQ, sUserId) ]);
-        } else {
-          oBinding.filter([]);
-        }
+      this._filterProjectsForUser(sUserId);
+    },
+
+    _filterProjectsForUser: function (sUserId) {
+      var oProjCB = this.byId("projectCombo");
+      var oBinding = oProjCB && oProjCB.getBinding("items");
+      if (!oBinding) { return; }
+      oBinding.filter(sUserId ? [ new Filter("USER_ID", FilterOperator.EQ, sUserId) ] : []);
+    },
+
+    /* === PROJECT === */
+    // select din listă -> păstrăm stabil atât key cât și text
+    _onProjectSelectionChange: function (oEvent) {
+      var oProjCB = oEvent.getSource();
+      var oItem   = oEvent.getParameter("selectedItem");
+      if (oItem) {
+        oProjCB.setSelectedKey(oItem.getKey());
+        oProjCB.setValue(oItem.getText());
       }
     },
 
-    onSendFeedback: function () {
-      var oModel  = this.getOwnerComponent().getModel("mainService"); // OData V2
+    // blur / X / text liber
+    _onProjectChange: function (oEvent) {
+      var oProjCB = oEvent.getSource();
+      var sVal    = oEvent.getParameter("value") || "";
+      var sKey    = oProjCB.getSelectedKey();
+      var oSel    = oProjCB.getSelectedItem();
 
-      var sToUser = this.byId("userCombo").getSelectedKey();          // -> TO_USER_ID
-      var sProjId = this.byId("projectCombo").getSelectedKey();       // -> PROJ_ID
-      var sTypeUi = this.byId("typeCombo").getSelectedKey() || "";    // -> FB_TYPE_ID
-      var sText   = this.byId("feedbackText").getValue();
-
-      // Logged user = FROM_USER_ID
-      var sFromUser = this._getLoggedUserId();
-
-      if (!sFromUser || !sToUser || !sProjId || !sText) {
-        MessageToast.show("Completează User, Project și Feedback.");
+      // 1) X apăsat sau valoare ștearsă -> clean total
+      if (!sVal) {
+        oProjCB.setSelectedKey("");
+        oProjCB.setValue("");
         return;
       }
 
-      // mapping type
-      var typeMap = { tech: "001", soft: "002", other: "003" };
-      var sTypeId = typeMap[sTypeUi] || sTypeUi || "001";
+      // 2) Dacă există deja selectedKey, NU mai curățăm. Sincronizăm doar textul.
+      if (sKey) {
+        if (oSel) { oProjCB.setValue(oSel.getText()); }
+        return;
+      }
 
-      var oPayload = {
-        FROM_USER_ID : sFromUser,
-        TO_USER_ID   : sToUser,
-        PROJ_ID      : sProjId,
-        FB_TYPE_ID   : sTypeId,
-        INPUT_TEXT   : sText,
-        IS_ANONYMOUS : "" // sau "X" dacă pui checkbox
-      };
-
-      this.getView().setBusy(true);
-
-      oModel.create("/FeedbackSet", oPayload, {
-        success: function (oCreated) {
-          this.getView().setBusy(false);
-          MessageToast.show("Feedback trimis. ID: " + (oCreated.FB_ID || "-"));
-          this.byId("feedbackText").setValue("");
-          this.byId("projectCombo").setSelectedKey("");
-        }.bind(this),
-        error: function (oErr) {
-          this.getView().setBusy(false);
-          MessageBox.error("Eroare la trimitere (FeedbackSet create).");
-          console.error(oErr);
-        }.bind(this)
+      // 3) Nu există key, userul a tastat text: încercăm să mapăm text -> item
+      var aItems = oProjCB.getItems() || [];
+      var oMatch = aItems.find(function (it) {
+        return (it.getText() || "").toLowerCase() === sVal.toLowerCase();
       });
+
+      if (oMatch) {
+        oProjCB.setSelectedKey(oMatch.getKey());
+        oProjCB.setValue(oMatch.getText());
+      } else {
+        // text liber care nu corespunde: nu lăsăm selecție fantomă
+        oProjCB.setSelectedKey("");
+        oProjCB.setValue("");
+        MessageToast.show("Selectează un proiect din listă.");
+      }
     },
 
-    _getLoggedUserId: function () {
-      var oComp = this.getOwnerComponent();
-      var oLogged = oComp.getModel("loggedUser") && oComp.getModel("loggedUser").getData();
+    /* === SEND === */
+    onSendFeedback: function () {
+      var oModel  = this.getOwnerComponent().getModel("mainService"); // OData V2
 
-      if (oLogged && oLogged.user_id) {
-        return oLogged.user_id;
+      var sToUser = this.byId("userCombo").getSelectedKey();  // TO_USER_ID
+
+      var oProjCB = this.byId("projectCombo");
+      var sProjId = oProjCB.getSelectedKey()
+                || (oProjCB.getSelectedItem() && oProjCB.getSelectedItem().getKey())
+                || "";  // PROJ_ID
+
+      var sTypeId = this.byId("typeCombo").getSelectedKey();  // FB_TYPE_ID
+      var sText   = this.byId("feedbackText").getValue();
+
+      // rezolvăm FROM_USER_ID (userul logat)
+      this._resolveFromUserId().then(function (sFromUser) {
+        var missing = [];
+        if (!sFromUser) missing.push("From User");
+        if (!sToUser)   missing.push("User");
+        if (!sProjId)   missing.push("Project");
+        if (!sTypeId)   missing.push("Feedback Type");
+        if (!sText)     missing.push("Feedback");
+        if (missing.length) {
+          MessageToast.show("Completează: " + missing.join(", ") + ".");
+          return;
+        }
+
+        var oPayload = {
+          FROM_USER_ID : sFromUser,
+          TO_USER_ID   : sToUser,
+          PROJ_ID      : sProjId,
+          FB_TYPE_ID   : sTypeId,
+          INPUT_TEXT   : sText,
+          IS_ANONYMOUS : ""   // sau "X" dacă vei adăuga checkbox
+        };
+
+        // POST simplu (fără $batch)
+        if (oModel.setUseBatch) { oModel.setUseBatch(false); }
+
+        this.getView().setBusy(true);
+        oModel.metadataLoaded().then(function () {
+          oModel.create("/FeedbackSet", oPayload, {
+            success: function (oCreated) {
+              this.getView().setBusy(false);
+              MessageToast.show("Feedback trimis. ID: " + (oCreated.FB_ID || "-"));
+
+              // 🔹 curățăm formularul complet după succes
+              this._resetForm();
+            }.bind(this),
+            error: function (oErr) {
+              this.getView().setBusy(false);
+              var msg = "Eroare la trimitere (FeedbackSet create).";
+              try {
+                var r = JSON.parse(oErr.responseText);
+                msg = (r && r.error && r.error.message && r.error.message.value) || msg;
+              } catch (e) {}
+              MessageBox.error(msg);
+            }.bind(this)
+          });
+        }.bind(this));
+      }.bind(this));
+    },
+
+    /* === HELPERS === */
+    _resetForm: function () {
+      // user
+      var oUserCB = this.byId("userCombo");
+      if (oUserCB) {
+        oUserCB.setSelectedKey("");
+        oUserCB.setValue("");
       }
 
-      var aUsers = oComp.getModel("userData") && oComp.getModel("userData").getData();
-      if (oLogged && oLogged.email && Array.isArray(aUsers)) {
-        var u = aUsers.find(function (it) {
-          return it.email && it.email.toLowerCase() === oLogged.email.toLowerCase();
+      // project + ștergem filtrul
+      var oProjCB = this.byId("projectCombo");
+      if (oProjCB) {
+        oProjCB.setSelectedKey("");
+        oProjCB.setValue("");
+        var oBinding = oProjCB.getBinding("items");
+        if (oBinding) { oBinding.filter([]); }
+      }
+
+      // feedback type
+      var oTypeCB = this.byId("typeCombo");
+      if (oTypeCB) { oTypeCB.setSelectedKey(""); }
+
+      // text
+      var oText = this.byId("feedbackText");
+      if (oText) { oText.setValue(""); }
+    },
+
+    _resolveFromUserId: function () {
+      var oComp   = this.getOwnerComponent();
+      var oLogged = oComp.getModel("loggedUser");
+
+      // 1) model
+      if (oLogged) {
+        var id = oLogged.getProperty("/user_id") || oLogged.getProperty("/USER_ID") || "";
+        if (id) {
+          try { localStorage.setItem("loggedUserId", id); } catch (e) {}
+          return Promise.resolve(id);
+        }
+      }
+
+      // 2) cache
+      try {
+        var cached = localStorage.getItem("loggedUserId") || "";
+        if (cached) { return Promise.resolve(cached); }
+      } catch (e) {}
+
+      // 3) OData după EMAIL
+      var email = "";
+      if (oLogged) {
+        email = oLogged.getProperty("/email") || oLogged.getProperty("/EMAIL") || "";
+      }
+      try { if (!email) email = localStorage.getItem("loggedEmail") || ""; } catch (e) {}
+
+      if (!email) { return Promise.resolve(""); }
+
+      var sEmailUp = email.toUpperCase();
+      var oModel  = oComp.getModel("mainService");
+
+      return new Promise(function (resolve) {
+        oModel.read("/UserSet", {
+          filters: [ new Filter("EMAIL", FilterOperator.EQ, sEmailUp) ],
+          urlParameters: { "$select": "USER_ID,EMAIL" },
+          success: function (oData) {
+            var uid = (oData.results && oData.results[0] && oData.results[0].USER_ID) || "";
+            if (uid) {
+              if (oLogged) { oLogged.setProperty("/user_id", uid); }
+              try { localStorage.setItem("loggedUserId", uid); } catch (e) {}
+            }
+            resolve(uid);
+          },
+          error: function () { resolve(""); }
         });
-        return u ? u.user_id : "";
-      }
-      return "";
+      });
     },
 
     onExit: function () {
@@ -135,7 +256,7 @@ sap.ui.define([
         var loggedUserData = oUserModel.getData();
         var allUsers = oUserDataModel.getData();
 
-        var currentUser = allUsers.find(function(user) {
+        var currentUser = allUsers.find(function (user) {
           return user.email && loggedUserData.email &&
                  user.email.toLowerCase() === loggedUserData.email.toLowerCase();
         });
