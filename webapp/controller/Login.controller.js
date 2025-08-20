@@ -11,12 +11,44 @@ sap.ui.define([
   return Controller.extend("fbtool.controller.Login", {
     onInit: function () {
       this.clearInputs();
+
+      this.getView().addEventDelegate({
+        onAfterRendering: function() {
+          this._addEnterKeyListeners();
+        }.bind(this)
+         });
+    },
+
+    _addEnterKeyListeners: function() {
+      // Add Enter key support to both email and password fields
+      var oEmailInput = this.byId("emailInput");
+      var oPasswordInput = this.byId("passwordInput");
+      
+      if (oEmailInput) {
+        oEmailInput.attachBrowserEvent("keypress", function(oEvent) {
+          if (oEvent.which === 13) { // Enter key
+            this.onLogin();
+          }
+        }.bind(this));
+      }
+      
+      if (oPasswordInput) {
+        oPasswordInput.attachBrowserEvent("keypress", function(oEvent) {
+          if (oEvent.which === 13) { // Enter key
+            this.onLogin();
+          }
+        }.bind(this));
+      }
     },
 
     getLogoSrc: function () {
-      return sap.ui.require.toUrl("fbtool/img/mhp-logo.png");
+      // Rezolvare corectă în FLP și local
+      var s = sap.ui.require.toUrl("fbtool/img/mhp-logo.png");
+      // (opțional) debug:
+      // console.log("Logo path:", s);
+      return s;
     },
-
+    
     // păstrează emailul salvat, golește parola
     clearInputs: function () {
       try {
@@ -75,28 +107,49 @@ sap.ui.define([
 
           var u = aRes[0]; // utilizatorul găsit
 
+          console.log("Raw backend data:", JSON.stringify(u, null, 2));
+          console.log("Individual field analysis:");
+          console.log("  - CAREER_LV (correct name):", typeof u.CAREER_LV, "->", u.CAREER_LV);
+          console.log("  - SU:", typeof u.SU, "->", u.SU);
+          console.log("  - PERSONAL_NR:", typeof u.PERSONAL_NR, "->", u.PERSONAL_NR);
+
+          // CLEAR any existing loggedUser model first
+          var oExistingModel = this.getOwnerComponent().getModel("loggedUser");
+          if (oExistingModel) {
+            oExistingModel.destroy();
+          }
+
+          console.log("Raw backend data:", JSON.stringify(u, null, 2));
+          console.log("Individual field analysis:");
+          console.log("  - CAREER_LV (correct name):", typeof u.CAREER_LV, "->", u.CAREER_LV);
+          console.log("  - SU:", typeof u.SU, "->", u.SU);
+          console.log("  - PERSONAL_NR:", typeof u.PERSONAL_NR, "->", u.PERSONAL_NR);
+
+          // CLEAR any existing loggedUser model first
+          var oExistingModel = this.getOwnerComponent().getModel("loggedUser");
+          if (oExistingModel) {
+            oExistingModel.destroy();
+          }
+
           // setează modelul "loggedUser"
           var oLogged = new JSONModel({
             user_id:      u.USER_ID,      // ← foarte important pentru FROM_USER_ID
             fullName:     u.NAME,
             email:        u.EMAIL,
-            careerLevel:  u.CAREER_LVL,
+            careerLevel:  u.CAREER_LV,
             serviceUnit:  u.SU,
-            businessArea: u.BUSINESS_AREA || "",
             personalNr:   u.PERSONAL_NR,
             fiscalYear:   u.FISCAL_YR,
             role:         u.ROLE,
-            team_mngr:    u.TEAM_MNGR
+            userId:       u.USER_ID,                
+            teamManager:  u.TEAM_MNGR 
           });
+          
+          // Force model to be fresh
+          oLogged.setSizeLimit(1000);
           this.getOwnerComponent().setModel(oLogged, "loggedUser");
 
-          // cache local
-          try {
-            window.localStorage.setItem("savedEmail", u.EMAIL);
-            window.localStorage.setItem("loggedUserId", u.USER_ID);
-            window.localStorage.setItem("loggedEmail", u.EMAIL);
-          } catch (e) {}
-
+          try { window.localStorage.setItem("savedEmail", u.EMAIL); } catch (e) {}
           this.clearInputs();
           MessageToast.show("Welcome, " + (u.NAME || "user") + "!");
 
