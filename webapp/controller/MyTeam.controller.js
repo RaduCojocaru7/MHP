@@ -166,35 +166,37 @@ sap.ui.define([
 
   // 4) MAPARE OData -> camelCase (la fel ca în ProfileInfo)
 var oPayload = {
-  fullName: oData.NAME,
-  email: oData.EMAIL,
-  personalNr: oData.PERSONAL_NR,
+  fullName:    oData.NAME,
+  email:       oData.EMAIL,
+  personalNr:  oData.PERSONAL_NR,
   serviceUnit: oData.SU,
-  role: oData.ROLE,
-  careerLevel: oData.CAREER_LV,
-  fiscalYear: oData.FISCAL_YR,
-  initials: initials
+  role:        oData.ROLE,
+  careerLevel: oData.CAREER_LV,   // sau CAREER_LVL dacă așa vine la tine
+  fiscalYear:  oData.FISCAL_YR,
+  initials:    initials
 };
+// ... ai deja oPayload cu fullName, email, personalNr, serviceUnit, role, careerLevel, fiscalYear, initials
 this._selectedUserModel.setData(oPayload);
+console.log("[MyTeam] selectedUser payload:", this._selectedUserModel.getData());
 
-  console.log("[MyTeam] selectedUser payload:", oPayload);
-
-  // 5) încarcă/ deschide fragmentul
-  if (!this._oTeamDialog) {
-    sap.ui.core.Fragment.load({
-      id: this.getView().getId(),
-      name: "fbtool.view.TeamMemberDialog",
-      controller: this
-    }).then(function (oDialog) {
-      this._oTeamDialog = oDialog;
-      this.getView().addDependent(oDialog); // important: propagă modelele View-ului
-      this._oTeamDialog.open();
-    }.bind(this)).catch(function (e) {
-      console.error("Cannot load fragment fbtool.view.TeamMemberDialog", e);
-    });
-  } else {
+if (!this._oTeamDialog) {
+  sap.ui.core.Fragment.load({
+    id: this.getView().getId(),
+    name: "fbtool.view.TeamMemberDialog",
+    controller: this
+  }).then(function (oDialog) {
+    this._oTeamDialog = oDialog;
+    this.getView().addDependent(oDialog);
+    // important: atașează explicit modelul la Dialog
+    this._oTeamDialog.setModel(this._selectedUserModel, "selectedUser");
     this._oTeamDialog.open();
-  }
+  }.bind(this));
+} else {
+  // reîmprospătează modelul pe dialog (în caz că s-a schimbat)
+  this._oTeamDialog.setModel(this._selectedUserModel, "selectedUser");
+  this._oTeamDialog.open();
+}
+
 }
 
 ,

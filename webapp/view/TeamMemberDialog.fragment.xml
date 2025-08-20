@@ -7,38 +7,41 @@
       stretchOnPhone="true">
 
     <VBox class="sapUiMediumMargin" alignItems="Center">
-      <Avatar displayShape="Circle" displaySize="L"
-              initials="{selectedUser>/initials}"
-              class="sapUiSmallMarginBottom"/>
-      <Text text="{selectedUser>/fullName}" class="sapUiSmallMarginBottom sapUiMediumFont sapUiStrong"/>
-      <Text text="{selectedUser>/email}"    class="sapUiTinyMarginBottom  sapUiSmallFont"/>
+      <Avatar displayShape="Circle" displaySize="L" initials="{selectedUser>initials}" class="sapUiSmallMarginBottom"/>
+      <Text text="{selectedUser>fullName}" class="sapUiSmallMarginBottom sapUiMediumFont sapUiStrong"/>
+      <Text text="{selectedUser>email}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
 
       <Panel headerText="Details" expandable="false" class="sapUiSmallMarginTop">
         <VBox class="sapUiSmallMargin">
 
           <HBox alignItems="Center" class="sapUiTinyMarginBottom">
             <core:Icon src="sap-icon://badge" size="1rem" class="sapUiTinyMarginEnd"/>
-            <Text text="{= 'Personal Nr.: ' + (${selectedUser>/personalNr} || '') }"/>
+            <Text text="Personal Nr.:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>personalNr}"/>
           </HBox>
 
           <HBox alignItems="Center" class="sapUiTinyMarginBottom">
             <core:Icon src="sap-icon://factory" size="1rem" class="sapUiTinyMarginEnd"/>
-            <Text text="{= 'Service Unit: ' + (${selectedUser>/serviceUnit} || '') }"/>
+            <Text text="Service Unit:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>serviceUnit}"/>
           </HBox>
 
           <HBox alignItems="Center" class="sapUiTinyMarginBottom">
             <core:Icon src="sap-icon://employee-pane" size="1rem" class="sapUiTinyMarginEnd"/>
-            <Text text="{= 'Role: ' + (${selectedUser>/role} || '') }"/>
+            <Text text="Role:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>role}"/>
           </HBox>
 
           <HBox alignItems="Center" class="sapUiTinyMarginBottom">
             <core:Icon src="sap-icon://employee-pane" size="1rem" class="sapUiTinyMarginEnd"/>
-            <Text text="{= 'Career level: ' + (${selectedUser>/careerLevel} ?? '') }"/>
+            <Text text="Career level:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>careerLevel}"/>
           </HBox>
 
           <HBox alignItems="Center" class="sapUiTinyMarginBottom">
             <core:Icon src="sap-icon://calendar" size="1rem" class="sapUiTinyMarginEnd"/>
-            <Text text="{= 'Fiscal Year: ' + (${selectedUser>/fiscalYear} || '') }"/>
+            <Text text="Fiscal Year:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>fiscalYear}"/>
           </HBox>
 
         </VBox>
