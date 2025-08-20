@@ -128,3 +128,9 @@
   opacity: 0.08;            /* discret */
   pointer-events: none;     /* nu blochează click-urile */
 }
+
+/* Blur ușor pentru block layer-ul Dialog-urilor */
+.sapUiBLy {
+  background-color: rgba(0,0,0,0.15);
+  backdrop-filter: blur(4px);
+}

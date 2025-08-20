@@ -62,13 +62,6 @@
           width="10rem"
           iconFirst="true" />
         <Button
-          icon="sap-icon://business-card"
-          text="PEG"
-          width="10rem"
-          class="roundedButton"
-          iconFirst="true"
-          press="onNavigateToPEG" />
-        <Button
           text="Feedback Request"
           icon="sap-icon://request"
           press="onNavigateToFeedbackRequest"
