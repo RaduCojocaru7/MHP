@@ -1,0 +1,57 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+  <!-- IMPORTANT: dialogul are binding la modelul "selectedUser" -->
+  <Dialog
+      id="teamProfileDialog"
+      title="Team Member"
+      class="sapUiContentPadding"
+      contentWidth="420px"
+      stretchOnPhone="true"
+      binding="{selectedUser>/}">
+
+    <VBox class="sapUiMediumMargin" alignItems="Center">
+      <Avatar displayShape="Circle" displaySize="L" initials="{selectedUser>initials}" class="sapUiSmallMarginBottom"/>
+      <Text text="{selectedUser>fullName}" class="sapUiSmallMarginBottom sapUiMediumFont sapUiStrong"/>
+      <Text text="{selectedUser>email}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+
+      <Panel headerText="Details" expandable="false" class="sapUiSmallMarginTop">
+        <VBox class="sapUiSmallMargin">
+
+          <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+            <core:Icon src="sap-icon://badge" size="1rem" class="sapUiTinyMarginEnd"/>
+            <Text text="Personal Nr.:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>personalNr}"/>
+          </HBox>
+
+          <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+            <core:Icon src="sap-icon://factory" size="1rem" class="sapUiTinyMarginEnd"/>
+            <Text text="Service Unit:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>serviceUnit}"/>
+          </HBox>
+
+          <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+            <core:Icon src="sap-icon://employee-pane" size="1rem" class="sapUiTinyMarginEnd"/>
+            <Text text="Role:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>role}"/>
+          </HBox>
+
+          <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+            <core:Icon src="sap-icon://employee-pane" size="1rem" class="sapUiTinyMarginEnd"/>
+            <Text text="Career level:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>careerLevel}"/>
+          </HBox>
+
+          <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+            <core:Icon src="sap-icon://calendar" size="1rem" class="sapUiTinyMarginEnd"/>
+            <Text text="Fiscal Year:" class="sapUiTinyMarginEnd"/>
+            <Text text="{selectedUser>fiscalYear}"/>
+          </HBox>
+
+        </VBox>
+      </Panel>
+    </VBox>
+
+    <beginButton>
+      <Button text="Close" press=".onCloseTeamDialog"/>
+    </beginButton>
+  </Dialog>
+</core:FragmentDefinition>

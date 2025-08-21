@@ -361,24 +361,12 @@ sap.ui.define([
       }
     },
 
-    onExit: function() {
-      console.log("Exiting PEG Request page...");
-    
-      var oRouter = UIComponent.getRouterFor(this);
-      
-      var oUserModel = this.getView().getModel("user");
-      if (oUserModel) {
-        var sRole = oUserModel.getProperty("/role");
-        if (sRole && sRole.toLowerCase() === "manager") {
-          oRouter.navTo("ManagerDashboard");
-        } else {
-          oRouter.navTo("UserDashboard");
-        }
-      } else {
-        oRouter.navTo("Login");
-      }
+    onNavBack: function() {
+      var role = this.getOwnerComponent().getModel("loggedUser")?.getProperty("/role");
+      var sTarget = (role && role.toLowerCase() === "manager") ? "ManagerDashboard" : "UserDashboard";
+      UIComponent.getRouterFor(this).navTo(sTarget);
     },
-
+    
     isFormValid: function(sManager, sProject) {
       return !!(sManager && sProject && sManager !== "" && sProject !== "");
     }

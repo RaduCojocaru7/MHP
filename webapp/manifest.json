@@ -45,8 +45,13 @@
         "settings": {
           "json": true,
           "loadMetadataAsync": true,
-          "defaultBindingMode": "TwoWay",
-          "useBatch": true
+          "defaultBindingMode": "OneWay",
+          "useBatch": false,
+          "defaultOperationMode": "Server",
+          "defaultCountMode": "Request",
+          "refreshAfterChange": false,
+          "preliminaryContext": true,
+          "skipMetadataAnnotationParsing": true
         }
       },
       "mainService": {
@@ -55,8 +60,13 @@
         "settings": {
           "json": true,
           "loadMetadataAsync": true,
-          "defaultBindingMode": "TwoWay",
-          "useBatch": true
+          "defaultBindingMode": "OneWay",
+          "useBatch": false,
+          "defaultOperationMode": "Server",
+          "defaultCountMode": "Request",
+          "refreshAfterChange": false,
+          "preliminaryContext": true,
+          "skipMetadataAnnotationParsing": true
         }
       },
       "i18n": {
@@ -95,38 +105,54 @@
 
       ],
       "targets": {
-        "TargetLogin": { "id": "Login", "name": "Login" },
-        "TargetForgotPassword": { "id": "ForgotPassword", "name": "ForgotPassword" },
-        "TargetUserDashboard": { "id": "UserDashboard", "name": "UserDashboard" },
-        "TargetManagerDashboard": { "id": "ManagerDashboard", "name": "ManagerDashboard" },
+        "TargetLogin": { 
+          "id": "Login", 
+          "name": "Login" 
+        },
+        "TargetForgotPassword": { 
+          "id": "ForgotPassword", 
+          "name": "ForgotPassword" 
+        },
+        "TargetUserDashboard": { 
+          "id": "UserDashboard", 
+          "name": "UserDashboard" 
+        },
+        "TargetManagerDashboard": { 
+          "id": "ManagerDashboard", 
+          "name": "ManagerDashboard" 
+        },
         "fb360": {
-          "viewName": "360FB",
+          "type": "View",
+          "name": "360FB",
           "viewType": "XML",
-          "viewId": "fb360",
+          "id": "fb360",
           "controlAggregation": "pages",
           "controlId": "app",
           "transition": "slide"
         },
         "TargetProfileInfo": {
+          "type": "View",
           "name": "ProfileInfo",
-          "viewName": "ProfileInfo",
           "viewType": "XML",
-          "id": "ProfileInfo"
+          "id": "ProfileInfo",
+          "controlAggregation": "pages",
+          "controlId": "app",
+          "transition": "slide"
         },
         "TargetPEGRequest": {
+          "type": "View",
           "name": "PEGRequest",
-          "viewName": "PEGRequest",
           "viewType": "XML",
-          "viewId": "PEGRequest",
+          "id": "PEGRequest",
           "controlAggregation": "pages",
           "controlId": "app",
           "transition": "slide"
         },
         "TargetPEGList": {
+          "type": "View",
           "name": "PEGList",
-          "viewName": "PEGList",
           "viewType": "XML",
-          "viewId": "PEGList",
+          "id": "PEGList",
           "controlAggregation": "pages",
           "controlId": "app",
           "transition": "slide"
@@ -159,5 +185,5 @@
 
       }
     }
-}
+  }
 }

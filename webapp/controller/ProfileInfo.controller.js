@@ -8,7 +8,6 @@ sap.ui.define([
 
   return Controller.extend("fbtool.controller.ProfileInfo", {
     onInit: function () {
-      console.log("ProfileInfo onInit - Starting...");
       this._refreshUserModel();
       
       var oRouter = this.getOwnerComponent().getRouter();
@@ -16,40 +15,30 @@ sap.ui.define([
     },
 
     _onRouteMatched: function() {
-      console.log("ProfileInfo - Route matched, refreshing user model...");
       setTimeout(function() {
         this._refreshUserModel();
       }.bind(this), 100);
     },
 
     onBeforeRendering: function() {
-      console.log("ProfileInfo onBeforeRendering - Refreshing user model...");
       this._refreshUserModel();
     },
 
     onAfterRendering: function() {
-      console.log("ProfileInfo onAfterRendering - Final model check...");
       var oUserModel = this.getView().getModel("user");
       if (oUserModel) {
         oUserModel.updateBindings(true);
-        console.log("ProfileInfo - After rendering, user data:", oUserModel.getData());
       } else {
-        console.error("ProfileInfo - No user model found in view after rendering");
-
         this._refreshUserModel();
       }
     },
 
     _refreshUserModel: function() {
-
       var oLoggedUserModel = this.getOwnerComponent().getModel("loggedUser");
       if (oLoggedUserModel) {
-  
         var oData = oLoggedUserModel.getData();
-        console.log("ProfileInfo - Original loggedUser data:", oData);
 
         if (!oData || !oData.email || !oData.fullName) {
-          console.warn("ProfileInfo - loggedUser model exists but has no valid data");
           return false;
         }
 
@@ -68,19 +57,9 @@ sap.ui.define([
           oFreshModel.updateBindings(true);
         }, 50);
         
-        console.log("ProfileInfo - Fresh user model set:", oFreshModel.getData());
         return true;
       } else {
-        console.error("ProfileInfo - No loggedUser model found in component");
         return false;
-      }
-    },
-
-    onExit: function() {
-
-      var oRouter = this.getOwnerComponent().getRouter();
-      if (oRouter && oRouter.getRoute("ProfileInfo")) {
-        oRouter.getRoute("ProfileInfo").detachPatternMatched(this._onRouteMatched, this);
       }
     },
 
@@ -91,18 +70,14 @@ sap.ui.define([
       if (sPreviousHash !== undefined) {
         window.history.go(-1);
       } else {
-
         var oUserModel = this.getOwnerComponent().getModel("loggedUser");
         
         if (!oUserModel) {
-          console.error("ProfileInfo - No loggedUser model found during navigation");
-
           UIComponent.getRouterFor(this).navTo("Login");
           return;
         }
 
         var sRole = oUserModel.getProperty("/role");
-        console.log("ProfileInfo - User role:", sRole);
 
         if (sRole && sRole.toLowerCase() === "manager") {
           UIComponent.getRouterFor(this).navTo("ManagerDashboard");

@@ -270,5 +270,10 @@ sap.ui.define([
         oRouter.navTo("Login");
       }
     }
+  } else {
+    // Fallback la UserDashboard dacă nu găsim datele utilizatorului
+    oRouter.navTo("UserDashboard");
+  }
+}
   });
 });
