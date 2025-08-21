@@ -1,10 +1,12 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+  <!-- IMPORTANT: dialogul are binding la modelul "selectedUser" -->
   <Dialog
       id="teamProfileDialog"
       title="Team Member"
       class="sapUiContentPadding"
       contentWidth="420px"
-      stretchOnPhone="true">
+      stretchOnPhone="true"
+      binding="{selectedUser>/}">
 
     <VBox class="sapUiMediumMargin" alignItems="Center">
       <Avatar displayShape="Circle" displaySize="L" initials="{selectedUser>initials}" class="sapUiSmallMarginBottom"/>
