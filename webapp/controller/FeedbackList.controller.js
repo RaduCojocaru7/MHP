@@ -146,27 +146,24 @@ sap.ui.define([
     },
 
     onBack: function () {
-      var oComponent = this.getOwnerComponent();
-      var oUserModel = oComponent.getModel("loggedUser");
-      var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-      var oUserDataModel = oComponent.getModel("userData");
+  var oComponent = this.getOwnerComponent();
+  var oLoggedUserModel = oComponent.getModel("loggedUser");
+  var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 
-      if (oUserModel && oUserDataModel) {
-        var loggedUserData = oUserModel.getData();
-        var allUsers = oUserDataModel.getData();
-        var currentUser = Array.isArray(allUsers) && allUsers.find(function (user) {
-          return user.email && loggedUserData.email &&
-                 user.email.toLowerCase() === loggedUserData.email.toLowerCase();
-        });
-        if (currentUser && currentUser.role && currentUser.role.toLowerCase() === "manager") {
-          oRouter.navTo("ManagerDashboard");
-        } else {
-          oRouter.navTo("UserDashboard");
-        }
-      } else {
-        oRouter.navTo("UserDashboard");
-      }
-    },
+  if (oLoggedUserModel) {
+    var userData = oLoggedUserModel.getData();
+    var role = (userData.role || "").toLowerCase();
+    
+    if (role === "manager") {
+      oRouter.navTo("ManagerDashboard");
+    } else {
+      oRouter.navTo("UserDashboard");
+    }
+  } else {
+    // Fallback la UserDashboard dacă nu găsim datele utilizatorului
+    oRouter.navTo("UserDashboard");
+  }
+},
 
     /* ===== Formatters (folosite în XML) ===== */
     fmtUserName: function (sUserId) {
