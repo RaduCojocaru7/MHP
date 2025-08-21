@@ -7,7 +7,12 @@
 
   <Page title="PEG Request">
     <headerContent>
-      <Button icon="sap-icon://nav-back" text="Exit" press="onExit"/>
+      <Button
+        text="Back"
+        icon="sap-icon://nav-back"
+        press="onNavBack"
+        type="Transparent"
+        class="subtleBtn"/>
     </headerContent>
 
     <content>

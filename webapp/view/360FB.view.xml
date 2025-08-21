@@ -7,7 +7,12 @@
 
   <Page title="360 Feedback Page">
     <headerContent>
-      <Button icon="sap-icon://nav-back" text="Exit" press="onExit"/>
+       <Button
+        text="Back"
+        icon="sap-icon://nav-back"
+        press="onBack"
+        type="Transparent"
+        class="subtleBtn"/>
     </headerContent>
 
     <content>

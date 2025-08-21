@@ -71,10 +71,6 @@ sap.ui.define([
       this.getOwnerComponent().getRouter().navTo("fb360");
     },
 
-    onNavigateToPEG: function () {
-      this.getOwnerComponent().getRouter().navTo("PEGRequest");
-    },
-
     onProfileInfoPress: function () {
       this.getOwnerComponent().getRouter().navTo("ProfileInfo");
     },
@@ -88,6 +84,12 @@ sap.ui.define([
       var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
       oRouter.navTo("FeedbackList");
     },
+
+    onNavPEGList: function () {
+      var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+      oRouter.navTo("PEGList");
+    },
+    
     onNavigateToMyTeam: function () {
   this.getOwnerComponent().getRouter().navTo("MyTeam");
     },

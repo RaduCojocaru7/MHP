@@ -24,27 +24,38 @@
           <ComboBox
             id="teamMemberCombo"
             width="100%"
-            items="{teamMembers>/teamMembers}">
-            <core:Item key="{teamMembers>email}" text="{teamMembers>name}" />
+            placeholder="Choose team member"
+            showClearIcon="true"
+            change=".onTeamMemberChange"
+            items="{
+              path: 'mainService>/UserSet',
+              parameters: { $select: 'USER_ID,NAME,TEAM_MNGR' }
+            }">
+            <core:Item key="{mainService>USER_ID}" text="{mainService>NAME}" />
           </ComboBox>
 
-          <!-- Manager name (readonly) -->
-          <Label text="Manager" class="sapUiTinyMarginTop"/>
+          <!-- Project dropdown (populate din User_ProjectsSet filtrat după user) -->
+          <Label text="Project" class="sapUiTinyMarginTop"/>
+          <ComboBox
+            id="projectSelect"
+            width="100%"
+            placeholder="Choose project"
+            showClearIcon="true"
+            change=".onProjectSelectionChange"
+            items="{
+              path: 'mainService>/User_ProjectsSet',
+              parameters: { $select: 'USER_ID,PROJ_ID,PROJ_NAME' }
+            }">
+            <core:Item key="{mainService>PROJ_ID}" text="{mainService>PROJ_NAME}" />
+          </ComboBox>
+
+          <!-- Manager name (set automat după proiectul selectat) -->
+          <Label text="Project Manager" class="sapUiTinyMarginTop"/>
           <Input
             id="managerInput"
-            value="{loggedUser>/fullName}"
+            value="{fr>/pmName}"
             enabled="false"
             width="100%" />
-
-          <!-- Project dropdown -->
-          <Label text="Project" class="sapUiTinyMarginTop"/>
-          <Select id="projectSelect" width="100%">
-            <items>
-              <core:Item key="project1" text="Project 1"/>
-              <core:Item key="project2" text="Project 2"/>
-              <core:Item key="project3" text="Project 3"/>
-            </items>
-          </Select>
 
           <!-- Feedback text area -->
           <Label text="Message" class="sapUiTinyMarginTop"/>

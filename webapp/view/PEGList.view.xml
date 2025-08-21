@@ -15,7 +15,7 @@
     </headerContent>
 
     <content>
-      <!-- Filtru DINAMIC după status (se umple din peg>/statuses) -->
+      <!-- Filter by status (dynamic from peg>/statuses) -->
       <Toolbar class="sapUiSmallMarginBottom sapUiTinyMarginTop">
         <Label text="Filter by status:" class="sapUiTinyMarginEnd"/>
         <Select id="statusFilter"
@@ -27,15 +27,32 @@
         </Select>
       </Toolbar>
 
-      <!-- Lista (gruparea pe status e aplicată din controller prin Sorter) -->
+      <!-- PEG List using ObjectListItem like Feedback List -->
       <List id="pegList"
             items="{peg>/requests}"
             class="sapUiResponsiveMargin sapUiTinyMarginTop"
             growing="true"
-            growingScrollToLoad="true">
-        <StandardListItem
+            growingScrollToLoad="true"
+            showSeparators="All">
+            
+        <ObjectListItem
           title="{peg>title}"
-          description="{peg>createdDate}"/>
+          intro="{ path: 'peg>createdDate', formatter: '.formatDateOnly' }">
+          <attributes>
+            <ObjectAttribute 
+              text="{
+                parts: [
+                  'peg>requesterName',
+                  'peg>managerName'
+                ],
+                formatter: '.formatFromToDisplay'
+              }"/>
+            <ObjectAttribute 
+              title="Project"
+              text="{peg>projectName}"/>
+          </attributes>
+        </ObjectListItem>
+
       </List>
     </content>
   </Page>
