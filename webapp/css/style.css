@@ -134,3 +134,117 @@
   background-color: rgba(0,0,0,0.15);
   backdrop-filter: blur(4px);
 }
+
+/* Butoane mari, rotunjite, tip "pill" pentru navigare */
+.roundedButton .sapMBtnInner {
+  border-radius: 9999px !important;
+  padding: 0.75rem 1.2rem !important;   /* înălțime + spațiere */
+  font-weight: 700 !important;
+  border: 1.5px solid var(--sapField_BorderColor) !important;
+  background: var(--sapButton_Lite_Background) !important;
+  color: var(--sapTextColor) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06) !important;
+}
+.roundedButton .sapMBtnIcon {
+  margin-right: .5rem !important;
+}
+.roundedButton:hover .sapMBtnInner,
+.roundedButton:focus .sapMBtnInner {
+  box-shadow: 0 4px 12px rgba(0,0,0,.12) !important;
+  transform: translateY(-1px);
+}
+/* Buton de navigare: dreptunghiular, lat, cu icon + text */
+.navRect .sapMBtnInner{
+  border-radius: 12px !important;          /* colțuri ușor rotunjite (nu pill) */
+  height: 52px !important;
+  padding: 0 18px !important;
+  border: 1.5px solid var(--sapList_BorderColor) !important;
+  background: var(--sapButton_Lite_Background) !important;
+  color: var(--sapTextColor) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.navRect .sapMBtnContent{
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .55rem !important;                   /* spațiu între icon și text */
+  white-space: nowrap !important;           /* nu rupe textul */
+}
+.navRect .sapMBtnIcon{
+  margin: 0 !important;
+}
+/* hover/focus */
+.navRect:hover .sapMBtnInner,
+.navRect:focus .sapMBtnInner{
+  box-shadow: 0 4px 12px rgba(0,0,0,.12) !important;
+  transform: translateY(-1px);
+}
+
+/* Variantă plină (dacă vrei să o aplici pe unele butoane) */
+.navRect--filled .sapMBtnInner{
+  background: var(--sapButton_Emphasized_Background) !important;
+  color: var(--sapButton_Emphasized_TextColor) !important;
+  border-color: var(--sapButton_Emphasized_BorderColor) !important;
+}
+
+
+/* Navigare – dreptunghi, icon + text, look ca în referință */
+.navRect .sapMBtnInner{
+  height: 54px !important;
+  padding: 0 20px !important;
+  border-radius: 14px !important;          /* colțuri ușor rotunjite */
+  background: #fff !important;
+  border: 1.5px solid var(--sapList_BorderColor) !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,.08) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  font-weight: 300 !important;             /* text mai „greu” ca în carduri */
+   font-size: 0.95rem !important; /* un pic mai mic pentru claritate */
+  letter-spacing: 0;                    /* un pic mai „clar” */
+}
+.navRect .sapMBtnContent{
+  display: inline-flex !important; align-items: center !important;
+  gap: .6rem !important; white-space: nowrap !important;
+}
+.navRect .sapMBtnIcon{ margin: 0 !important; }
+.navRect:hover .sapMBtnInner,
+.navRect:focus .sapMBtnInner{
+  box-shadow: 0 6px 16px rgba(0,0,0,.12) !important;
+  transform: translateY(-1px);
+}
+
+/* ===== Header-ul tabelului (Request Date, Status etc.) mai mic ===== */
+
+/* înălțime totală a rândului de header */
+.tightTable .sapMListTblHeader,
+.tightTable .sapMListTblHeader > tr{
+  height: 1.6rem !important;         /* poți coborî până la 1.4rem dacă vrei */
+  min-height: 0 !important;
+  line-height: 1.2rem !important;
+}
+
+/* padding minim pe celulele de header */
+.tightTable .sapMListTblHeaderCell{
+  padding: .12rem .40rem !important;  /* sus/jos foarte mic, st/dr mic */
+  vertical-align: middle !important;
+}
+
+/* textul din celulele de header mai mic și mai „strâns” */
+.tightTable .sapMListTblHeaderCell .sapMText{
+  font-size: .80rem !important;
+  line-height: 1rem !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+/* unele teme impun înălțime minimă pe header – o anulăm */
+.tightTable .sapMColumnHeader{
+  min-height: 0 !important;
+}
+
+/* dacă există spacer pentru sticky headers, nu-l lăsa să bage spațiu */
+.tightTable .sapMListTblStickyHdrSpacer{
+  height: 0 !important;
+}
+

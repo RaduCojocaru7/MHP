@@ -184,15 +184,24 @@ sap.ui.define([
       return (this._projById && this._projById[sProjId]) || sProjId;
     },
 
-    fmtDate: function (sDateYyyyMmDd) {
-      if (!sDateYyyyMmDd) { return ""; }
-      var s = String(sDateYyyyMmDd);
-      if (s.length === 8) {
-        var y = s.slice(0, 4), m = s.slice(4, 6), d = s.slice(6, 8);
-        return d + "." + m + "." + y; // 31.12.2025
-      }
-      return sDateYyyyMmDd;
-    },
+    fmtDate: function (sDate) {
+  if (!sDate) return "";
+
+  // dacă vine ca string din OData (ex: "Tue Aug 19 2025 03:00:00 GMT+0300...")
+  var oDate = new Date(sDate);
+  if (isNaN(oDate.getTime())) {
+    return sDate; // fallback dacă nu se poate converti
+  }
+
+  // format simplu, gen "Tuesday, 19 Aug 2025"
+  return oDate.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  });
+}
+,
 
     /* ===== Helpers ===== */
     _resolveFromUserId: function () {

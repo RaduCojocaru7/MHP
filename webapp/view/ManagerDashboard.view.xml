@@ -52,37 +52,38 @@
         </VBox>
       </VBox>
 
-      <!-- Butoane 360FB + PEG -->
-      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
-        <Button
-          icon="sap-icon://document"
-          text="360FB"
-          press="onNavigateTo360FB"
-          class="sapUiTinyMarginEnd roundedButton"
-          width="10rem"
-          iconFirst="true" />
-        <Button
-          text="Feedback Request"
-          icon="sap-icon://request"
-          press="onNavigateToFeedbackRequest"
-          class="roundedButton"
-          width="10rem" />
-          <Button
-                id="btnFeedbackList_mngr"
-                class="roundedButton"
-                width="10rem"
-                icon="sap-icon://list"
-                text="Feedback List"
-                press="onNavFeedbackList"/>
+<HBox justifyContent="Start" wrap="Wrap"
+      class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
 
-<Button
-  id="btnMyTeam"
-  class="roundedButton"
-  width="10rem"
-  icon="sap-icon://group"
-  text="My Team"
-  press="onNavigateToMyTeam"/>
-      </HBox>
+  <Button
+    icon="sap-icon://document"
+    text="360FB"
+    press="onNavigateTo360FB"
+    class="sapUiTinyMarginEnd navRect"
+    width="15rem" iconFirst="true" />
+
+  <Button
+    icon="sap-icon://paper-plane"
+    text="Feedback Request"
+    press="onNavigateToFeedbackRequest"
+    class="sapUiTinyMarginEnd navRect"
+    width="18rem" iconFirst="true" />
+
+  <Button
+    icon="sap-icon://list"
+    text="Feedback List"
+    press="onNavFeedbackList"
+    class="sapUiTinyMarginEnd navRect"
+    width="15rem" iconFirst="true" />
+
+  <Button
+    icon="sap-icon://group"
+    text="My Team"
+    press="onNavigateToMyTeam"
+    class="navRect"
+    width="15rem" iconFirst="true" />
+</HBox>
+
 
     </content>
   </Page>
