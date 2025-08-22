@@ -52,38 +52,52 @@
         </VBox>
       </VBox>
 
-<HBox justifyContent="Start" wrap="Wrap"
-      class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+      <!-- Navigation Buttons Grid Layout -->
+      <VBox class="sapUiMediumMargin">
+        <!-- First Row -->
+        <HBox justifyContent="Start" wrap="NoWrap" 
+              class="sapUiMediumMarginBottom">
+          
+          <Button
+            icon="sap-icon://document"
+            text="360FB"
+            press="onNavigateTo360FB"
+            class="sapUiMediumMarginEnd navRect"
+            width="18rem" iconFirst="true" />
 
-  <Button
-    icon="sap-icon://document"
-    text="360FB"
-    press="onNavigateTo360FB"
-    class="sapUiTinyMarginEnd navRect"
-    width="15rem" iconFirst="true" />
+          <Button
+            icon="sap-icon://paper-plane"
+            text="Feedback Request"
+            press="onNavigateToFeedbackRequest"
+            class="sapUiMediumMarginEnd navRect"
+            width="18rem" iconFirst="true" />
 
-  <Button
-    icon="sap-icon://paper-plane"
-    text="Feedback Request"
-    press="onNavigateToFeedbackRequest"
-    class="sapUiTinyMarginEnd navRect"
-    width="18rem" iconFirst="true" />
+          <Button
+            icon="sap-icon://list"
+            text="Feedback List"
+            press="onNavFeedbackList"
+            class="navRect"
+            width="18rem" iconFirst="true" />
+        </HBox>
 
-  <Button
-    icon="sap-icon://list"
-    text="Feedback List"
-    press="onNavFeedbackList"
-    class="sapUiTinyMarginEnd navRect"
-    width="15rem" iconFirst="true" />
+        <!-- Second Row -->
+        <HBox justifyContent="Start" wrap="NoWrap">
+          
+          <Button
+            icon="sap-icon://permission"
+            text="PEG List"
+            press="onNavPEGList"
+            class="sapUiMediumMarginEnd navRect"
+            width="18rem" iconFirst="true" />
 
-  <Button
-    icon="sap-icon://group"
-    text="My Team"
-    press="onNavigateToMyTeam"
-    class="navRect"
-    width="15rem" iconFirst="true" />
-</HBox>
-
+          <Button
+            icon="sap-icon://group"
+            text="My Team"
+            press="onNavigateToMyTeam"
+            class="navRect"
+            width="18rem" iconFirst="true" />
+        </HBox>
+      </VBox>
 
 
     </content>
