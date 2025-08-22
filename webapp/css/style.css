@@ -243,8 +243,23 @@
   min-height: 0 !important;
 }
 
-/* dacă există spacer pentru sticky headers, nu-l lăsa să bage spațiu */
+
 .tightTable .sapMListTblStickyHdrSpacer{
   height: 0 !important;
+}
+
+
+
+.pegTable .sapMListTblCell { vertical-align: middle; }
+
+.pegTable .sapMText { white-space: normal; }
+
+.gradeGroup .sapMRbB { margin-right: .75rem; }
+
+.legendRow .legendItem {
+  font-size: 0.85rem;
+  color: #6a6d70;
+  margin-right: .75rem;
+  white-space: nowrap;
 }
 

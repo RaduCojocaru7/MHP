@@ -152,9 +152,16 @@ sap.ui.define([
 
     onNavigateToMyTeam: function () {
 
-  this.getOwnerComponent().getRouter().navTo("MyTeam");
+        this.getOwnerComponent().getRouter().navTo("MyTeam");
 
     },
+
+    onNavigateToPegEdit: function () {
+     
+        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+        oRouter.navTo("ManagerPegEdit");
+    },
+
  
     onExit: function() {
 

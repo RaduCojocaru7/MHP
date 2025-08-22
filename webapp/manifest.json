@@ -101,7 +101,9 @@
         { "name": "PEGList", "pattern": "PEGList", "target": ["TargetPEGList"] },
         { "name": "FeedbackList", "pattern": "FeedbackList", "target": ["TargetFeedbackList"] },
         { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] },
-        { "pattern": "MyTeam", "name": "MyTeam", "target": ["MyTeam"] }
+        { "pattern": "MyTeam", "name": "MyTeam", "target": ["MyTeam"] },
+        { "pattern": "manager/peg-edit", "name": "ManagerPegEdit", "target": "ManagerPegEdit" }
+      
 
       ],
       "targets": {
@@ -181,6 +183,10 @@
   "controlAggregation": "pages",
   "controlId": "app",
   "transition": "slide"
+},
+"ManagerPegEdit": { 
+  "viewName": "ManagerPegEdit", 
+  "viewLevel": 2 
 }
 
       }
