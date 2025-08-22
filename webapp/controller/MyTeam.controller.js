@@ -207,6 +207,7 @@ sap.ui.define([
     /* ===================== PM FEEDBACK REQUESTS ===================== */
 
     _initPmRequestsSection: function () {
+      console.log("Manager info:", this._mgr); // debug
       var oSel = this.byId("pmModeSelect");
       if (oSel && oSel.getSelectedKey() !== this._pmMode) {
         oSel.setSelectedKey(this._pmMode);
@@ -222,15 +223,41 @@ sap.ui.define([
     _applyPmReqFilters: function () {
       var oTable   = this.byId("pmReqTable");
       var oBinding = oTable && oTable.getBinding("items");
-      if (!oBinding || !this._mgr || !this._mgr.id) { return; }
+      
+      console.log("Applying PM filters - Manager:", this._mgr, "Mode:", this._pmMode); // debug
+      
+      if (!oBinding) {
+        console.log("No binding found, will retry after updateFinished");
+        oTable.attachEventOnce("updateFinished", this._applyPmReqFilters, this);
+        return;
+      }
+      
+      if (!this._mgr || !this._mgr.id) {
+        console.log("No manager ID available");
+        return;
+      }
 
+      var managerId = this._normId(this._mgr.id); // normalizează ID-ul
+      console.log("Using manager ID:", managerId, "Original:", this._mgr.id);
+      
       var a = [];
       if (this._pmMode === "received") {
-        a.push(new Filter("TO_MNGR_ID",   FilterOperator.EQ, this._mgr.id));
+        // Pentru "received" - cereri primite de mine (eu sunt TO_MNGR_ID)
+        a.push(new Filter("TO_MNGR_ID", FilterOperator.EQ, managerId));
       } else {
-        a.push(new Filter("FROM_MNGR_ID", FilterOperator.EQ, this._mgr.id));
+        // Pentru "sent" - cereri trimise de mine (eu sunt FROM_MNGR_ID)
+        a.push(new Filter("FROM_MNGR_ID", FilterOperator.EQ, managerId));
       }
+      
+      console.log("Applying filters:", a);
       oBinding.filter(a, "Application");
+      
+      // Refresh binding pentru a forța încărcarea
+      try { 
+        oBinding.refresh(true); 
+      } catch (e) {
+        console.log("Error refreshing binding:", e);
+      }
     },
 
     /* ===== Lookups + formatters ===== */
@@ -249,13 +276,25 @@ sap.ui.define([
                 var name = u.NAME || raw;
                 m[raw]  = name;
                 m[norm] = name;
+                
+                // Adaugă și varianta cu padStart pentru compatibilitate
+                if (raw !== norm) {
+                  m[raw.padStart(3, "0")] = name;
+                }
               }
             }.bind(this));
+            
+            console.log("Loaded user names:", Object.keys(m).length, "entries");
+            console.log("Sample entries:", Object.keys(m).slice(0, 5));
+            
             this._userById = m;
             this._lkp.setProperty("/userById", m);
             resolve();
           }.bind(this),
-          error: function () { resolve(); }
+          error: function (err) { 
+            console.log("Error loading user names:", err);
+            resolve(); 
+          }
         });
       }.bind(this));
     },
