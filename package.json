@@ -27,5 +27,8 @@
   "sapuxLayer": "CUSTOMER_BASE",
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
 }
