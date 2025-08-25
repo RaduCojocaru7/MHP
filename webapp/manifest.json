@@ -33,7 +33,7 @@
     "rootView": { "viewName": "fbtool.view.App", "type": "XML", "id": "App", "async": true },
     "dependencies": {
       "minUI5Version": "1.138.1",
-      "libs": { "sap.m": {}, "sap.ui.core": {} }
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.ui.export": {} }
     },
     "contentDensities": { "compact": true, "cozy": true },
 

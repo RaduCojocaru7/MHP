@@ -8,9 +8,11 @@ sap.ui.define([
 
   return Controller.extend("fbtool.controller.ManagerPegEdit", {
 
- 
+
+  
+
     _getInitialPegData: function () {
-      // pun -1 pe selectedIndex ca să fie clar ca nu e ales nimic după reset
+    
       return {
         PEG_REQ_NR: "",
         PEG_ID: "",
@@ -24,73 +26,72 @@ sap.ui.define([
     },
 
     _resetForm: function () {
-      // curat tot modelul peg după ce salvez cu succes
       const m = this.getView().getModel("peg");
       m.setData(this._getInitialPegData());
       m.refresh(true);
 
-      // curat eventualele schimbări OData rămase 
       const oModel = this.getOwnerComponent().getModel();
       if (oModel && oModel.resetChanges) { oModel.resetChanges(); }
 
-     
-      const inp = this.byId("pegReqInput"); 
+      const inp = this.byId("pegReqInput");
       if (inp) { setTimeout(() => inp.focus(), 0); }
     },
 
+    _readFirst: function (path, aFilters, sSelect) {
+      const oModel = this.getOwnerComponent().getModel();
+      return new Promise((resolve, reject) => {
+        oModel.read(path, {
+          filters: aFilters || [],
+          urlParameters: sSelect ? { $select: sSelect } : undefined,
+          success: (d) => resolve(d && d.results && d.results[0]),
+          error: reject
+        });
+      });
+    },
+
+  
+
     onInit: function () {
-      // pornesc view-ul cu starea inițială
       this.getView().setModel(new JSONModel(this._getInitialPegData()), "peg");
     },
 
-    /* Dupa ce scriu PEG_REQ_NR, imi iau PEG_ID din Peg_RequestSet */
+  
+
     onReqChange: function () {
       const oModel = this.getOwnerComponent().getModel();
       const oPeg   = this.getView().getModel("peg");
       const sReq   = oPeg.getProperty("/PEG_REQ_NR");
-
-      console.log("[PEG] onReqChange -> PEG_REQ_NR =", sReq);
       if (!sReq) { return; }
 
       this.getView().setBusy(true);
 
-      // citesc Peg_RequestSet filtrat după PEG_REQ_NR; din rezultat scot PEG_ID
       oModel.read("/Peg_RequestSet", {
         filters: [ new Filter("PEG_REQ_NR", FilterOperator.EQ, sReq) ],
         success: (oData) => {
-          console.log("[PEG] Peg_RequestSet results:", oData.results);
           if (!oData.results || !oData.results.length) {
             this.getView().setBusy(false);
             MessageBox.warning("PEG request not found.");
             return;
           }
-          // retin PEG_ID ca sa-l pun pe toate notele
           oPeg.setProperty("/PEG_ID", oData.results[0].PEG_ID);
-          console.log("[PEG] Found PEG_ID =", oData.results[0].PEG_ID);
           this.getView().setBusy(false);
         },
-        error: (e) => {
+        error: () => {
           this.getView().setBusy(false);
-          console.error("[PEG] read error:", e);
           MessageBox.error("Error while reading the PEG request.");
         }
       });
     },
 
-    /* Save = creez 5 înregistrări in Peg_GradesSet (una câte una) */
+  
     onSave: function () {
       const oView  = this.getView();
       const oModel = this.getOwnerComponent().getModel();
       const p      = oView.getModel("peg").getData();
 
-     
       if (!p.PEG_REQ_NR)  { MessageToast.show("Please enter the PEG request number."); return; }
       if (!p.PEG_ID)      { MessageToast.show("PEG_ID not found for this request.");   return; }
 
-      
-      oModel.setUseBatch(false);
-
-      // dacă nu am selectat toate notele, nu pot salva
       const allPicked = [p.EXPERTISE, p.NETWORK, p.TEAMING, p.PASSION, p.AUTONOMY]
         .every(v => (v|0) >= 0);
       if (!allPicked) {
@@ -98,15 +99,13 @@ sap.ui.define([
         return;
       }
 
-      // helper: convertesc 0..4 din UI în 1..5 pentru backend
       const mk = (crit, idx, txt) => ({
         PEG_ID:        p.PEG_ID,
-        CRIT_ID:       crit,            
-        GRADE:         (idx|0) + 1,
+        CRIT_ID:       crit,
+        GRADE:         (idx|0) + 1,     
         GRADE_COMMENT: txt || "",
-        STATUS:        "SENT",          // în grades salvez „SENT”; cererea o marchez separat ca DONE !!!
+        STATUS:        "SENT",
         REVIEW_DATE:   new Date()
-        
       });
 
       const payloads = [
@@ -116,58 +115,176 @@ sap.ui.define([
         mk("04", p.PASSION,   p.PASSION_TXT),
         mk("05", p.AUTONOMY,  p.AUTONOMY_TXT)
       ];
-      console.log("[PEG] payloads to create:", payloads);
 
       oView.setBusy(true);
-
-      // trimit create-urile secvential !!! (altfel aveam coliziuni)
       const createOne = (i) => {
         if (i >= payloads.length) {
-          // dacă toate au mers, marchez cererea ca DONE
           return this._markReqDone(p.PEG_REQ_NR, p.PEG_ID);
         }
-        const pl = payloads[i];
-        console.log(`[PEG] CREATE ${i+1}/${payloads.length}`, pl);
-        oModel.create("/Peg_GradesSet", pl, {
-          success: (data) => {
-            console.log(`[PEG] OK create ${i+1}/${payloads.length}`, data);
-            createOne(i + 1);
-          },
-          error: (e) => {
-            console.error(`[PEG] ERROR create ${i+1}/${payloads.length}`, e);
-            oView.setBusy(false);
-            MessageBox.error("Error while saving grades.");
-          }
+        oModel.create("/Peg_GradesSet", payloads[i], {
+          success: () => createOne(i + 1),
+          error:   () => { oView.setBusy(false); MessageBox.error("Error while saving grades."); }
         });
       };
-
       createOne(0);
     },
 
-    /* Dupa ce am creat notele, pun cererea pe DONE (update pe Peg_RequestSet) */
     _markReqDone: function (sReqNr, sPegId) {
       const oView  = this.getView();
       const oModel = this.getOwnerComponent().getModel();
+      const sKey   = oModel.createKey("/Peg_RequestSet", { PEG_REQ_NR: sReqNr, PEG_ID: sPegId });
 
-      // IMPORTANT: aici pun toate cheile definite în MPC pentru Peg_RequestSet
-      const keyObj = { PEG_REQ_NR: sReqNr, PEG_ID: sPegId };
-      const sKey   = oModel.createKey("/Peg_RequestSet", keyObj);
-      console.log("[PEG] UPDATE Peg_RequestSet key:", keyObj, "->", sKey);
-
-      // marchez cererea ca DONE in PEG Request la STATUS
       oModel.update(sKey, { STATUS: "DONE" }, {
-        success: () => {
-          oView.setBusy(false);
-          MessageToast.show("Grades saved successfully. PEG request completed.");
-          // aici dau clear
-          this._resetForm();
-        },
-        error: (e) => {
-          oView.setBusy(false);
-          console.error("[PEG] update error:", e);
-          MessageToast.show("Grades saved, but the request status could not be updated.");
-        }
+        success: () => { oView.setBusy(false); MessageToast.show("Grades saved successfully. PEG request completed."); this._resetForm(); },
+        error:   () => { oView.setBusy(false); MessageToast.show("Grades saved, but the request status could not be updated."); }
       });
+    },
+
+    /*  export: header (employee/project) + grades */
+
+    _formatYear: function (v) {
+  const d = (v instanceof Date) ? v : new Date(v);
+  return isNaN(d) ? "" : d.toLocaleDateString("en-GB", { year: "numeric" });
+},
+
+
+
+    onExport: async function () {
+      const oModel = this.getOwnerComponent().getModel();
+      const peg = this.getView().getModel("peg").getData();
+      
+
+
+      if (!peg.PEG_REQ_NR) {
+        MessageToast.show("Please enter the PEG request number first.");
+        return;
+      }
+
+      try {
+        this.getView().setBusy(true);
+
+        // 1) PEG request
+        const req = await this._readFirst(
+          "/Peg_RequestSet",
+          [ new Filter("PEG_REQ_NR", FilterOperator.EQ, peg.PEG_REQ_NR) ],
+          "PEG_ID,PEG_REQ_NR,USER_ID,MANAGER_ID,PROJ_NUMBER,REQUEST_DATE"
+        );
+        if (!req) {
+          this.getView().setBusy(false);
+          MessageBox.warning("PEG request was not found.");
+          return;
+        }
+
+        const yearVal = this._formatYear(req.REQUEST_DATE);
+
+        // 2) Employee and 3) Manager 
+        const emp = await this._readFirst(
+  "/UserSet",
+  [ new Filter("USER_ID", FilterOperator.EQ, req.USER_ID) ]
+);
+
+        const mgr = await this._readFirst(
+          "/UserSet",
+          [ new Filter("USER_ID", FilterOperator.EQ, req.MANAGER_ID) ],
+          "USER_ID,NAME"
+        );
+
+        const todayStr = new Date().toLocaleDateString("ro-RO");
+        const headerRows = [
+          { Field: "Year",            Value: yearVal  || "" },
+          { Field: "Employee Name",   Value: emp?.NAME || "" },
+          { Field: "Personal Number", Value: emp?.PERSONAL_NR || "" },
+          { Field: "Current Level",   Value: emp?.CAREER_LV || "" },
+          { Field: "SU",              Value: emp?.SU || "" },
+          { Field: "PEG number",      Value: req.PEG_REQ_NR || "" },
+          { Field: "Project",         Value: req.PROJ_NUMBER || "" },
+          { Field: "Evaluator",       Value: mgr?.NAME || "" },
+          { Field: "Date",            Value: todayStr }
+        ];
+
+        const toGrade = (i) => (i | 0) >= 0 ? (i | 0) + 1 : "";
+        const gradeRows = [
+          { Criterion: "Expertise and Working Results",          Grade: toGrade(peg.EXPERTISE), Comment: peg.EXPERTISE_TXT || "" },
+          { Criterion: "Networking Skills and Entrepreneurship", Grade: toGrade(peg.NETWORK),   Comment: peg.NETWORK_TXT   || "" },
+          { Criterion: "Teaming and Partnership",                Grade: toGrade(peg.TEAMING),   Comment: peg.TEAMING_TXT   || "" },
+          { Criterion: "Passion and Resilience",                 Grade: toGrade(peg.PASSION),   Comment: peg.PASSION_TXT   || "" },
+          { Criterion: "Autonomy and Leadership",                Grade: toGrade(peg.AUTONOMY),  Comment: peg.AUTONOMY_TXT  || "" }
+        ];
+
+        const dataForSheet = [ ...headerRows, {}, ...gradeRows ];
+
+        sap.ui.require([
+          "sap/ui/export/Spreadsheet",
+          "sap/ui/export/library"
+        ], (Spreadsheet, exportLibrary) => {
+          try {
+            const EdmType = exportLibrary && exportLibrary.EdmType;
+            if (!Spreadsheet || !EdmType) { throw new Error("sap.ui.export not available."); }
+
+            const columns = [
+              { label: "Field",        property: "Field",     type: EdmType.String, width: 24 },
+              { label: "Value",        property: "Value",     type: EdmType.String, width: 40 },
+              { label: "Criterion",    property: "Criterion", type: EdmType.String, width: 36 },
+              { label: "Grade (1–5)",  property: "Grade",     type: EdmType.Number, width: 14 },
+              { label: "Comment",      property: "Comment",   type: EdmType.String, width: 60, wrap: true }
+            ];
+
+            const ts = new Date().toISOString().replace(/[:.-]/g, "").slice(0, 15);
+            const fileName = `PEG_Report_${req.PEG_REQ_NR || "export"}_${ts}.xlsx`;
+
+            new Spreadsheet({
+              workbook: { columns },
+              dataSource: dataForSheet,
+              fileName
+            }).build()
+              .then(() => MessageToast.show("Excel report generated."))
+              .finally(() => this.getView().setBusy(false));
+
+          } catch (err) {
+            this._exportCsvFallback(headerRows, gradeRows, req.PEG_REQ_NR);
+            this.getView().setBusy(false);
+          }
+        }, () => {
+          this._exportCsvFallback(headerRows, gradeRows, req.PEG_REQ_NR);
+          this.getView().setBusy(false);
+        });
+
+      } catch (e) {
+        this.getView().setBusy(false);
+        MessageBox.error("Failed to build the Excel report.");
+        
+      }
+    },
+
+    _exportCsvFallback: function (headerRows, gradeRows, pegReqNr) {
+      const esc = (v) => {
+        const s = (v == null ? "" : String(v));
+        return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        };
+
+      const lines = [];
+      lines.push(["Field", "Value"].map(esc).join(","));
+      headerRows.forEach(r => lines.push([r.Field, r.Value].map(esc).join(",")));
+      lines.push("");
+      lines.push(["Criterion", "Grade (1–5)", "Comment"].map(esc).join(","));
+      gradeRows.forEach(r => lines.push([r.Criterion, r.Grade, r.Comment].map(esc).join(",")));
+
+      const csv = lines.join("\n");
+      const ts = new Date().toISOString().replace(/[:.-]/g, "").slice(0, 15);
+      const fileName = `PEG_Report_${pegReqNr || "export"}_${ts}.csv`;
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      MessageToast.show("CSV report generated.");
     }
+
   });
 });

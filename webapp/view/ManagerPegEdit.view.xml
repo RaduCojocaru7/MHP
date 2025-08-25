@@ -131,7 +131,14 @@
 
         <!-- Actions -->
         <HBox class="sapUiLargeMarginTop" justifyContent="End">
-          <Button text="Save" type="Emphasized" press=".onSave"/>
+          <Button text="Save" 
+              type="Emphasized" 
+              class="sapUiTinyMarginEnd" 
+              press=".onSave"/>
+
+          <Button text="Export to Excel"
+              icon="sap-icon://excel-attachment"
+              press=".onExport"/>
         </HBox>
 
       </VBox>
