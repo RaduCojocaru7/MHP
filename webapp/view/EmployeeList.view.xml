@@ -1,0 +1,99 @@
+<mvc:View
+    controllerName="fbtool.controller.EmployeeList"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+    height="100%">
+
+    <Page title="Employee List">
+        <headerContent>
+            <Button
+                text="Back"
+                icon="sap-icon://nav-back"
+                press="onNavBack"
+                type="Transparent"
+                class="subtleBtn"/>
+        </headerContent>
+
+        <content>
+            <VBox width="100%" class="sapUiSmallMargin">
+
+                <SearchField
+                    id="employeeSearch"
+                    placeholder="Search by name..."
+                    liveChange=".onSearch"
+                    width="40%" />
+
+                <FlexBox
+                    justifyContent="Start"
+                    wrap="Wrap"
+                    width="100%"
+                    class="sapUiSmallMarginTop">
+
+                    <Select id="careerFilter" change=".onFilterChange" width="12rem" class="sapUiTinyMarginEnd sapUiSmallMarginBottom">
+                        <items>
+                            <core:Item key="" text="All Career Levels" />
+                            <core:Item key="1" text="Intern" />
+                            <core:Item key="2" text="Mid" />
+                            <core:Item key="3" text="Senior" />
+                        </items>
+                    </Select>
+
+                    <Select id="suFilter" change=".onFilterChange" width="12rem" class="sapUiTinyMarginEnd sapUiSmallMarginBottom">
+                        <items>
+                            <core:Item key="" text="All SUs" />
+                            <core:Item key="TM" text="TM" />
+                            <core:Item key="CJ" text="CJ" />
+                            <core:Item key="BUC" text="BUC" />
+                        </items>
+                    </Select>
+
+                    <Select id="managerFilter" change=".onFilterChange" width="12rem" class="sapUiSmallMarginBottom">
+                        <items>
+                            <core:Item key="" text="All Managers" />
+                            <core:Item key="Marius Norman" text="Marius Norman" />
+                            <core:Item key="Andrei Pop" text="Andrei Pop" />
+                            <core:Item key="Matei Laszlo" text="Matei Laszlo" />
+                            <core:Item key="Ana Meree" text="Ana Meree" />
+                        </items>
+                    </Select>
+
+                </FlexBox>
+            </VBox>
+
+            <!-- Employee Table -->
+            <Table
+                id="employeeTable"
+                items="{employeeModel>/employees}"
+                inset="false"
+                width="100%"
+                growing="true"
+                growingThreshold="20"
+                mode="SingleSelectMaster">
+
+                <columns>
+                    <Column><Text text="Name"/></Column>
+                    <Column><Text text="Email"/></Column>
+                    <Column><Text text="Personal Nr"/></Column>
+                    <Column><Text text="Career Level"/></Column>
+                    <Column><Text text="SU"/></Column>
+                    <Column><Text text="Manager"/></Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{= ${employeeModel>name} ? ${employeeModel>name} : '-' }" />
+                            <Text text="{= ${employeeModel>email} ? ${employeeModel>email} : '-' }" />
+                            <Text text="{= ${employeeModel>personalNr} ? ${employeeModel>personalNr} : '-' }" />
+                            <Text text="{= ${employeeModel>careerLevel} ? ${employeeModel>careerLevel} : '-' }" />
+                            <Text text="{= ${employeeModel>su} ? ${employeeModel>su} : '-' }" />
+                            <Text text="{= ${employeeModel>manager} ? ${employeeModel>manager} : '-' }" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

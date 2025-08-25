@@ -147,7 +147,7 @@ sap.ui.define([
           MessageToast.show("Welcome, " + (u.NAME || "user") + "!");
 
           // rutare după rol
-          var sRole = (u.ROLE || "").toLowerCase();
+          var sRole = (u.ROLE || "").toLowerCase().trim();
           if (sRole === "manager") {
             this.getOwnerComponent().getRouter().navTo("ManagerDashboard");
           } else if (sRole === "hr") {

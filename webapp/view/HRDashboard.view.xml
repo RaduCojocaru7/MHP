@@ -17,14 +17,11 @@
 
     <content>
 
-      <!-- Card user info -->
       <VBox class="sapUiMediumMargin">
         <VBox class="sapUiSmallMargin sapUiContentPadding userCard">
 
-          <!-- Info utilizator pe două coloane -->
           <HBox justifyContent="SpaceBetween" alignItems="Start" class="sapUiTinyMarginBottom">
 
-            <!-- Stânga: avatar, nume, email -->
             <HBox alignItems="Center">
               <Avatar displaySize="L" src="sap-icon://employee" class="sapUiTinyMarginEnd"/>
               <VBox>
@@ -41,33 +38,32 @@
               </VBox>
             </HBox>
 
-            <!-- Dreapta: info -->
             <VBox alignItems="End" class="sapUiTinyMarginBegin">
               <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
               <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
-              <Text text="Business Area: {user>/businessArea}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
+              <Text text="Role: {user>/role}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
             </VBox>
           </HBox>
 
         </VBox>
       </VBox>
 
-      <!-- Butoane rotunde -->
-      <HBox justifyContent="Start" class="sapUiSmallMargin sapUiResponsiveMargin sapUiTinyMarginTop">
+      <HBox justifyContent="Start" class="sapUiMediumMargin">
+        
         <Button
           icon="sap-icon://list"
           text="PEG List"
           press="onNavigateToPEGList"
-          class="sapUiTinyMarginEnd roundedButton"
-          width="10rem"
-          iconFirst="true" />
+          class="sapUiMediumMarginEnd navRect"
+          width="18rem" iconFirst="true" />
+
         <Button
           icon="sap-icon://group"
           text="Employee List"
           press="onNavigateToEmployeeList"
-          class="roundedButton"
-          width="12rem"
-          iconFirst="true" />
+          class="navRect"
+          width="18rem" iconFirst="true" />
+
       </HBox>
 
     </content>

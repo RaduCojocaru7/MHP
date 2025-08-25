@@ -14,7 +14,6 @@
       <VBox class="sapUiSmallMargin">
         <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
 
-          <!-- Dropdown Received / Sent -->
           <Select id="modeSelect"
                   selectedKey="received"
                   change="onModeSelectChange"
@@ -22,15 +21,16 @@
             <core:Item key="received" text="Received"/>
             <core:Item key="sent"     text="Sent"/>
           </Select>
-
-          <!-- Dacă vrei search, decomentezi în controller onSearch și aici:
-          <SearchField id="search" width="50%" placeholder="Search feedback text..."
-                       liveChange="onSearch" search="onSearch" clear="onSearch"/>
-          -->
         </HBox>
 
         <List id="fbList"
-              items="{ path: 'mainService>/FeedbackSet' }"
+              items="{ 
+                path: 'mainService>/FeedbackSet',
+                parameters: {
+                  $select: 'FB_ID,FROM_USER_ID,TO_USER_ID,FB_TYPE_ID,PROJ_ID,INPUT_TEXT,SEND_DATE,IS_ANONYMOUS',
+                  $orderby: 'SEND_DATE desc'
+                }
+              }"
               growing="true"
               growingScrollToLoad="true"
               noDataText="No feedback found.">
@@ -43,10 +43,8 @@
                   text="{ path: 'mainService>FROM_USER_ID', formatter: '.fmtUserName' }"/>
                 <ObjectAttribute title="To"
                   text="{ path: 'mainService>TO_USER_ID', formatter: '.fmtUserName' }"/>
-                <!-- aici afișăm numele tipului, nu ID-ul -->
                 <ObjectAttribute title="Type"
                   text="{ path: 'mainService>FB_TYPE_ID', formatter: '.fmtTypeName' }"/>
-                <!-- aici afișăm numele proiectului, nu ID-ul -->
                 <ObjectAttribute title="Project"
                   text="{ path: 'mainService>PROJ_ID', formatter: '.fmtProjName' }"/>
               </attributes>

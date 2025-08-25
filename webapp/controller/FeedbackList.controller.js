@@ -5,18 +5,56 @@ sap.ui.define([
   "sap/m/MessageToast"
 ], function (Controller, Filter, FilterOperator, MessageToast) {
   "use strict";
-
+ 
   return Controller.extend("fbtool.controller.FeedbackList", {
-
+ 
     onInit: function () {
-      this._sMode    = "received";                // "received" | "sent"
+      this._sMode    = "received";                
       this._sQuery   = "";
       this._sUserId  = "";
-      this._userById = Object.create(null);       // USER_ID -> NAME
-      this._typeById = Object.create(null);       // FB_TYPE_ID -> TYPE
-      this._projById = Object.create(null);       // PROJ_ID -> PROJ_NAME
+      this._userById = Object.create(null);       
+      this._typeById = Object.create(null);       
+      this._projById = Object.create(null);      
 
-      // Încarcă lookup-urile (user, type, project) apoi leagă lista
+      // Curăță cache-ul vechi
+      try {
+        localStorage.removeItem("loggedUserId");
+      } catch (e) {}
+      
+      // Setup listener pentru schimbări în modelul loggedUser
+      var oComp = this.getOwnerComponent();
+      var oLogged = oComp.getModel("loggedUser");
+      if (oLogged) {
+        oLogged.attachPropertyChange(this._onLoggedUserChanged, this);
+      }
+
+      this._initializeFeedbackList();
+      
+      // Verifică periodic dacă utilizatorul s-a schimbat (mai des)
+      this._userCheckInterval = setInterval(function() {
+        this._checkForUserChange();
+      }.bind(this), 1000); // la fiecare secundă în loc de 2
+    },
+
+    // Verifică dacă utilizatorul s-a schimbat și actualizează automat
+    _checkForUserChange: function() {
+      var oComp = this.getOwnerComponent();
+      var oLogged = oComp.getModel("loggedUser");
+      var currentModelUserId = oLogged ? oLogged.getProperty("/userId") : "";
+      
+      if (currentModelUserId && currentModelUserId !== this._sUserId) {
+        this._sUserId = currentModelUserId;
+        try { 
+          localStorage.setItem("loggedUserId", currentModelUserId); 
+        } catch (e) {}
+        this._applyFilters();
+      }
+    },
+
+    // Inițializarea listei de feedback
+    _initializeFeedbackList: function() {
+      this._checkForUserChange();
+      
       Promise.all([
         this._loadUserNames(),
         this._loadTypeNames(),
@@ -25,19 +63,45 @@ sap.ui.define([
         return this._resolveFromUserId();
       }.bind(this)).then(function (sUserId) {
         this._sUserId = sUserId || "";
+        
         if (!this._sUserId) {
           MessageToast.show("Nu pot identifica utilizatorul logat.");
           return;
         }
-        // sincronizează dropdown-ul cu starea internă
+        
         var oSel = this.byId("modeSelect");
         if (oSel && oSel.getSelectedKey() !== this._sMode) {
           oSel.setSelectedKey(this._sMode);
         }
-        this._applyFilters();
+        
+        setTimeout(function() {
+          this._applyFilters();
+   
+          setTimeout(function() {
+            var oList = this.byId("fbList");
+            var oBinding = oList && oList.getBinding("items");
+            if (oBinding) {
+              oBinding.refresh(false); // soft refresh pentru formatters
+            }
+          }.bind(this), 200); 
+        }.bind(this), 200); 
+        
       }.bind(this));
     },
 
+    // Handler pentru schimbări în modelul loggedUser
+    _onLoggedUserChanged: function(oEvent) {
+      var sProperty = oEvent.getParameter("path");
+      var newValue = oEvent.getParameter("value");
+      
+      if (sProperty === "/userId" && newValue !== this._sUserId) {
+        this._resetControllerState();
+        setTimeout(function() {
+          this._initializeFeedbackList();
+        }.bind(this), 100);
+      }
+    },
+ 
     /* ===== Lookups ===== */
     _loadUserNames: function () {
       var oModel = this.getOwnerComponent().getModel("mainService");
@@ -57,7 +121,7 @@ sap.ui.define([
         });
       }.bind(this));
     },
-
+ 
     _loadTypeNames: function () {
       var oModel = this.getOwnerComponent().getModel("mainService");
       return new Promise(function (resolve) {
@@ -76,12 +140,11 @@ sap.ui.define([
         });
       }.bind(this));
     },
-
+ 
     _loadProjectNames: function () {
       var oModel = this.getOwnerComponent().getModel("mainService");
       return new Promise(function (resolve) {
         if (!oModel) { resolve(); return; }
-        // Dacă ai un ProjectsSet dedicat, folosește-l. Altfel, agregăm din User_ProjectsSet.
         oModel.read("/User_ProjectsSet", {
           urlParameters: { "$select": "PROJ_ID,PROJ_NAME" },
           success: function (oData) {
@@ -98,25 +161,106 @@ sap.ui.define([
         });
       }.bind(this));
     },
-
+ 
     /* ===== Filtering core ===== */
     _applyFilters: function () {
+      var oComp = this.getOwnerComponent();
+      var oLogged = oComp.getModel("loggedUser");
+      var currentModelUserId = oLogged ? oLogged.getProperty("/userId") : "";
+      
+      if (currentModelUserId && currentModelUserId !== this._sUserId) {
+        this._sUserId = currentModelUserId;
+        try { 
+          localStorage.setItem("loggedUserId", currentModelUserId); 
+        } catch (e) {}
+      }
+      
       var oList = this.byId("fbList");
       var oBinding = oList && oList.getBinding("items");
-      if (!oBinding || !this._sUserId) { return; }
+      
+      if (!oBinding) {
+        setTimeout(function() {
+          this._applyFilters();
+        }.bind(this), 500); 
+        return;
+      }
+      
+      if (!this._sUserId) {
+        oBinding.filter([], "Application");
+        return; 
+      }
 
+      var iCurrentLength = oBinding.getLength ? oBinding.getLength() : 0;
+ 
+      var userIdForFilter = parseInt(this._sUserId, 10);
       var aFilters = [];
+
       if (this._sMode === "received") {
-        aFilters.push(new Filter("TO_USER_ID",   FilterOperator.EQ, this._sUserId));
+        aFilters.push(new Filter("TO_USER_ID", FilterOperator.EQ, userIdForFilter));
       } else {
-        aFilters.push(new Filter("FROM_USER_ID", FilterOperator.EQ, this._sUserId));
+        aFilters.push(new Filter("FROM_USER_ID", FilterOperator.EQ, userIdForFilter));
       }
 
-      if (this._sQuery) {
-        aFilters.push(new Filter("INPUT_TEXT", FilterOperator.Contains, this._sQuery));
+      if (this._sQuery && this._sQuery.trim()) {
+        aFilters.push(new Filter("INPUT_TEXT", FilterOperator.Contains, this._sQuery.trim()));
       }
 
-      oBinding.filter(aFilters, "Application");
+      if (iCurrentLength === 0) {
+        oBinding.refresh(true);
+        setTimeout(function() {
+          oBinding.filter(aFilters, "Application");
+        }, 300); 
+      } else {
+        oBinding.filter(aFilters, "Application");
+      }
+    },
+
+    _clearFeedbackList: function() {
+      var oList = this.byId("fbList");
+      var oBinding = oList && oList.getBinding("items");
+      if (oBinding) {
+        oBinding.filter([], "Application");
+      }
+    },
+
+   
+    _changeUser: function(sNewUserId) {
+      this._clearFeedbackList();
+      this._sUserId = sNewUserId || "";
+      this._sQuery = "";
+      this._applyFilters();
+    },
+
+    _resetControllerState: function() {
+      this._sMode = "received";
+      this._sQuery = "";
+      this._sUserId = "";
+      
+      try {
+        localStorage.removeItem("loggedUserId");
+        localStorage.removeItem("loggedEmail");
+      } catch (e) {}
+      
+      this._clearFeedbackList();
+      
+      var oSel = this.byId("modeSelect");
+      if (oSel) {
+        oSel.setSelectedKey("received");
+      }
+    },
+
+    // Cleanup
+    onExit: function() {
+      if (this._userCheckInterval) {
+        clearInterval(this._userCheckInterval);
+        this._userCheckInterval = null;
+      }
+      
+      var oComp = this.getOwnerComponent();
+      var oLogged = oComp && oComp.getModel("loggedUser");
+      if (oLogged) {
+        oLogged.detachPropertyChange(this._onLoggedUserChanged, this);
+      }
     },
 
     /* ===== UI handlers ===== */
@@ -124,91 +268,143 @@ sap.ui.define([
       var sKey = oEvent.getSource().getSelectedKey();
       this._sMode = (sKey === "sent") ? "sent" : "received";
       this._applyFilters();
+
+      setTimeout(function() {
+        var oList = this.byId("fbList");
+        var oBinding = oList && oList.getBinding("items");
+        if (oBinding) {
+          oBinding.refresh(false); // soft refresh pentru formatters
+        }
+      }.bind(this), 100);
     },
-
-    // Dacă activezi searchul în view, decomentează asta:
-    // onSearch: function (oEvent) {
-    //   var sVal = "";
-    //   if (oEvent.getParameter("newValue") !== undefined) {
-    //     sVal = oEvent.getParameter("newValue");
-    //   } else if (oEvent.getParameter("query") !== undefined) {
-    //     sVal = oEvent.getParameter("query");
-    //   }
-    //   this._sQuery = (sVal || "").trim();
-    //   this._applyFilters();
-    // },
-
+ 
     onRefresh: function (oEvent) {
       var oList = this.byId("fbList");
       var oBinding = oList && oList.getBinding("items");
-      if (oBinding) { oBinding.refresh(true); }
+      if (oBinding) { 
+        oBinding.refresh(true);
+      }
       oEvent.getSource().hide();
     },
-
+ 
     onBack: function () {
-  var oComponent = this.getOwnerComponent();
-  var oLoggedUserModel = oComponent.getModel("loggedUser");
-  var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-
-  if (oLoggedUserModel) {
-    var userData = oLoggedUserModel.getData();
-    var role = (userData.role || "").toLowerCase();
-    
-    if (role === "manager") {
-      oRouter.navTo("ManagerDashboard");
-    } else {
-      oRouter.navTo("UserDashboard");
-    }
-  } else {
-    // Fallback la UserDashboard dacă nu găsim datele utilizatorului
-    oRouter.navTo("UserDashboard");
-  }
-},
-
-    /* ===== Formatters (folosite în XML) ===== */
+      var oComponent = this.getOwnerComponent();
+      var oUserModel = oComponent.getModel("loggedUser");
+      var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+ 
+      if (oUserModel) {
+        var userData = oUserModel.getData();
+        var role = (userData.role || "").toLowerCase();
+        
+        if (role === "manager") {
+          oRouter.navTo("ManagerDashboard");
+        } else {
+          oRouter.navTo("UserDashboard");
+        }
+      } else {
+        oRouter.navTo("UserDashboard");
+      }
+    },
+ 
+    /* ===== Formatters ===== */
     fmtUserName: function (sUserId) {
       if (!sUserId) { return ""; }
+
+      if (!this._userById || Object.keys(this._userById).length === 0) {
+        setTimeout(function() {
+          var oList = this.byId("fbList");
+          var oBinding = oList && oList.getBinding("items");
+          if (oBinding) {
+            oBinding.refresh(false);
+          }
+        }.bind(this), 300); 
+      }
+      
       return (this._userById && this._userById[sUserId]) || sUserId;
     },
-
+ 
     fmtTypeName: function (sTypeId) {
       if (!sTypeId) { return ""; }
       return (this._typeById && this._typeById[sTypeId]) || sTypeId;
     },
-
+ 
     fmtProjName: function (sProjId) {
       if (!sProjId) { return ""; }
       return (this._projById && this._projById[sProjId]) || sProjId;
     },
+ 
+    fmtDate: function (sDate) {
+      if (!sDate) return "";
 
-    fmtDate: function (sDateYyyyMmDd) {
-      if (!sDateYyyyMmDd) { return ""; }
-      var s = String(sDateYyyyMmDd);
-      if (s.length === 8) {
-        var y = s.slice(0, 4), m = s.slice(4, 6), d = s.slice(6, 8);
-        return d + "." + m + "." + y; // 31.12.2025
+      var oDate = new Date(sDate);
+      if (isNaN(oDate.getTime())) {
+        return sDate; 
       }
-      return sDateYyyyMmDd;
+ 
+      return oDate.toLocaleDateString("en-GB", {
+        weekday: "long",
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
     },
-
+ 
     /* ===== Helpers ===== */
     _resolveFromUserId: function () {
       var oComp = this.getOwnerComponent();
       var oLogged = oComp.getModel("loggedUser");
-
-      // 1) din model
+ 
+      // Prioritate: modelul loggedUser
       if (oLogged) {
-        var id = oLogged.getProperty("/user_id") || oLogged.getProperty("/USER_ID") || "";
-        if (id) { return Promise.resolve(id); }
+        var id = oLogged.getProperty("/userId") || "";
+        if (id) { 
+          try { localStorage.setItem("loggedUserId", id); } catch (e) {}
+          return Promise.resolve(id); 
+        }
       }
-      // 2) din cache
+      
+      // Fallback: cache
       try {
         var cached = localStorage.getItem("loggedUserId") || "";
-        if (cached) { return Promise.resolve(cached); }
+        if (cached) { 
+          return Promise.resolve(cached); 
+        }
       } catch (e) {}
-      // 3) fallback
-      return Promise.resolve("");
-    }
+      
+      // Fallback: lookup prin email
+      var email = "";
+      if (oLogged) {
+        email = oLogged.getProperty("/email") || "";
+      }
+      try { if (!email) email = localStorage.getItem("loggedEmail") || ""; } catch (e) {}
+      
+      if (!email) { 
+        return Promise.resolve(""); 
+      }
 
+      var sEmailUp = email.toUpperCase();
+      var oModel = oComp.getModel("mainService");
+
+      return new Promise(function (resolve) {
+        oModel.read("/UserSet", {
+          filters: [ new Filter("EMAIL", FilterOperator.EQ, sEmailUp) ],
+          urlParameters: { "$select": "USER_ID,EMAIL" },
+          success: function (oData) {
+            var uid = (oData.results && oData.results[0] && oData.results[0].USER_ID) || "";
+            if (uid) {
+              if (oLogged) { 
+                oLogged.setProperty("/userId", uid);
+              }
+              try { localStorage.setItem("loggedUserId", uid); } catch (e) {}
+            }
+            resolve(uid);
+          },
+          error: function (err) { 
+            resolve(""); 
+          }
+        });
+      });
+    }
+ 
   });
 });

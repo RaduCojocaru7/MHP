@@ -4,7 +4,7 @@
   xmlns="sap.m"
   xmlns:core="sap.ui.core">
 
-  <Page title="My PEG List">
+  <Page title="PEG List">
     <headerContent>
       <Button
         text="Back"
@@ -15,7 +15,6 @@
     </headerContent>
 
     <content>
-      <!-- Filter by status (dynamic from peg>/statuses) -->
       <Toolbar class="sapUiSmallMarginBottom sapUiTinyMarginTop">
         <Label text="Filter by status:" class="sapUiTinyMarginEnd"/>
         <Select id="statusFilter"
@@ -27,7 +26,6 @@
         </Select>
       </Toolbar>
 
-      <!-- PEG List using ObjectListItem like Feedback List -->
       <List id="pegList"
             items="{peg>/requests}"
             class="sapUiResponsiveMargin sapUiTinyMarginTop"

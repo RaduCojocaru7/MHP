@@ -46,6 +46,7 @@
             <VBox alignItems="End" class="sapUiTinyMarginBegin">
               <Text text="Career Level: {user>/careerLevel}" class="sapUiTinyMarginBottom sapUiSmallFont" />
               <Text text="Service Unit: {user>/serviceUnit}" class="sapUiTinyMarginBottom sapUiSmallFont" />
+              <Text text="Role: {user>/role}" class="sapUiTinyMarginBottom sapUiSmallFont"/>
             </VBox>
           </HBox>
 

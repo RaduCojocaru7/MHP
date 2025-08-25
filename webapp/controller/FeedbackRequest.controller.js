@@ -1,4 +1,3 @@
-// webapp/controller/FeedbackRequest.controller.js
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/core/UIComponent",
@@ -165,12 +164,37 @@ sap.ui.define([
 
         oView.setBusy(true);
         oModel.metadataLoaded().then(function () {
-          // ⚠️ schimbă aici dacă setul tău are alt nume decât /Manager_Feedback_RequestSet
           oModel.create("/Manager_Feedback_RequestSet", oPayload, {
             success: function (oCreated) {
               oView.setBusy(false);
-              var sId = (oCreated && (oCreated.FB_REQ_ID || oCreated.FB_REQ_NR)) || "-";
-              MessageToast.show("Request trimis. ID: " + sId);
+              
+              // Crează mesaj de succes cu numele PM-ului și team member-ului
+              var sPmName = oFR.pmName || "Project Manager";
+              var sTeamMemberName = "";
+              var oTeamCombo = oView.byId("teamMemberCombo");
+              var oSelectedTeamItem = oTeamCombo && oTeamCombo.getSelectedItem();
+              if (oSelectedTeamItem) {
+                sTeamMemberName = oSelectedTeamItem.getText();
+              }
+              
+              var sRequestNr = (oCreated && oCreated.FB_REQ_NR) || "";
+              var successMsg = "";
+              
+              if (sRequestNr) {
+                successMsg = "Feedback request #" + sRequestNr + " sent successfully";
+                if (sTeamMemberName && sPmName) {
+                  successMsg += " for " + sTeamMemberName + " to " + sPmName;
+                }
+                successMsg += "!";
+              } else {
+                successMsg = "Feedback request sent successfully";
+                if (sTeamMemberName && sPmName) {
+                  successMsg += " for " + sTeamMemberName + " to " + sPmName;
+                }
+                successMsg += "!";
+              }
+
+              MessageToast.show(successMsg);
 
               // curățare formular
               this._resetForm();
@@ -208,7 +232,7 @@ sap.ui.define([
       var oLogged = oComp.getModel("loggedUser");
 
       if (oLogged) {
-        var id = oLogged.getProperty("/user_id") || oLogged.getProperty("/USER_ID") || "";
+        var id = oLogged.getProperty("/userId") || "";
         if (id) {
           try { localStorage.setItem("loggedUserId", id); } catch (e) {}
           return Promise.resolve(id);
@@ -222,7 +246,7 @@ sap.ui.define([
 
       var email = "";
       if (oLogged) {
-        email = oLogged.getProperty("/email") || oLogged.getProperty("/EMAIL") || "";
+        email = oLogged.getProperty("/email") || "";
       }
       try { if (!email) email = localStorage.getItem("loggedEmail") || ""; } catch (e) {}
       if (!email) { return Promise.resolve(""); }
@@ -237,7 +261,7 @@ sap.ui.define([
           success: function (oData) {
             var uid = (oData.results && oData.results[0] && oData.results[0].USER_ID) || "";
             if (uid) {
-              if (oLogged) { oLogged.setProperty("/user_id", uid); }
+              if (oLogged) { oLogged.setProperty("/userId", uid); }
               try { localStorage.setItem("loggedUserId", uid); } catch (e) {}
             }
             resolve(uid);

@@ -54,7 +54,7 @@
           <Input
             id="managerInput"
             value="{fr>/pmName}"
-            enabled="false"
+            editable="false"
             width="100%" />
 
           <!-- Feedback text area -->

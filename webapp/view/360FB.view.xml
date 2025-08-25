@@ -4,7 +4,6 @@
   xmlns="sap.m"
   xmlns:core="sap.ui.core"
   displayBlock="true">
-
   <Page title="360 Feedback Page">
     <headerContent>
        <Button
@@ -14,14 +13,24 @@
         type="Transparent"
         class="subtleBtn"/>
     </headerContent>
-
     <content>
       <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
         <VBox class="feedbackCard sapUiMediumMargin" width="500px">
           <Title text="Send Feedback 360" level="H3" class="sapUiSmallMarginBottom"/>
 
-          <!-- User: afișează doar NAME; key = USER_ID -->
-          <Label text="User" labelFor="userCombo"/>
+          <Label 
+            text="Feedback Request Number (optional)" 
+            labelFor="fbRequestNumber"
+            visible="{= ${loggedUser>/role} === 'MANAGER' }"/>
+          <Input
+            id="fbRequestNumber"
+            width="100%"
+            placeholder="Enter feedback request number (optional)"
+            class="sapUiSmallMarginBottom"
+            visible="{= ${loggedUser>/role} === 'MANAGER' }"/>
+          
+  
+          <Label text="User *" labelFor="userCombo"/>
           <ComboBox
             id="userCombo"
             width="100%"
@@ -30,47 +39,57 @@
             items="{
               path: 'mainService>/UserSet',
               parameters: { $select: 'USER_ID,NAME' }
-            }">
+            }"
+            class="sapUiSmallMarginBottom">
             <core:Item key="{mainService>USER_ID}" text="{mainService>NAME}" />
           </ComboBox>
+          
 
-          <!-- Project: filtrat automat după USER_ID selectat; cu X + type-ahead -->
-          <Label text="Project" labelFor="projectCombo"/>
-<ComboBox
-  id="projectCombo"
-  width="100%"
-  showClearIcon="true"
-  placeholder="Type to search project"
-  items="{
-    path: 'mainService>/User_ProjectsSet',
-    parameters: { $select: 'USER_ID,PROJ_ID,PROJ_NAME' }
-  }">
-  <core:Item xmlns:core="sap.ui.core"
-             key="{mainService>PROJ_ID}"
-             text="{mainService>PROJ_NAME}" />
-</ComboBox>
+          <Label text="Project (optional)" labelFor="projectCombo"/>
+          <ComboBox
+            id="projectCombo"
+            width="100%"
+            showClearIcon="true"
+            placeholder="Type to search project (optional)"
+            items="{
+              path: 'mainService>/User_ProjectsSet',
+              parameters: { $select: 'USER_ID,PROJ_ID,PROJ_NAME' }
+            }"
+            class="sapUiSmallMarginBottom">
+            <core:Item key="{mainService>PROJ_ID}" text="{mainService>PROJ_NAME}" />
+          </ComboBox>
 
+          <Label text="Feedback type *" labelFor="typeCombo"/>
+          <ComboBox
+            id="typeCombo"
+            width="100%"
+            showClearIcon="true"
+            items="{
+              path: 'mainService>/Feedback_TypeSet',
+              parameters: { $select: 'FB_TYPE_ID,TYPE' }
+            }"
+            class="sapUiSmallMarginBottom">
+            <core:Item key="{mainService>FB_TYPE_ID}" text="{mainService>TYPE}" />
+          </ComboBox>
 
+          <CheckBox
+            id="anonymousCheckbox"
+            text="Send as anonymous"
+            class="sapUiSmallMarginBottom"/>
 
-          <Label text="Feedback type" labelFor="typeCombo"/>
-<ComboBox
-  id="typeCombo"
-  width="100%"
-  showClearIcon="true"
-  items="{
-    path: 'mainService>/Feedback_TypeSet',
-    parameters: { $select: 'FB_TYPE_ID,TYPE' }
-  }">
-<core:Item xmlns:core="sap.ui.core"
-             key="{mainService>FB_TYPE_ID}"
-             text="{mainService>TYPE}" />
-</ComboBox>
-
-
-          <Label text="Feedback" labelFor="feedbackText"/>
-          <TextArea id="feedbackText" placeholder="Write your feedback here..." rows="5" width="100%" class="sapUiSmallMarginBottom"/>
-
-          <Button icon="sap-icon://paper-plane" text="Send Feedback 360" press="onSendFeedback" class="feedbackButton"/>
+          <Label text="Feedback *" labelFor="feedbackText"/>
+          <TextArea 
+            id="feedbackText" 
+            placeholder="Write your feedback here..." 
+            rows="5" 
+            width="100%" 
+            class="sapUiSmallMarginBottom"/>
+          
+          <Button 
+            icon="sap-icon://paper-plane" 
+            text="Send Feedback 360" 
+            press="onSendFeedback" 
+            class="feedbackButton"/>
         </VBox>
       </HBox>
     </content>

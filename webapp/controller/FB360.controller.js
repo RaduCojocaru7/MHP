@@ -9,6 +9,14 @@ sap.ui.define([
 
   return Controller.extend("fbtool.controller.FB360", {
 
+    // Normalizează ID-urile (padding cu zerouri)
+    _normId: function (v) {
+      if (v === undefined || v === null) { return ""; }
+      var s = String(v).trim();
+      if (/^\d+$/.test(s) && s.length < 3) { s = s.padStart(3, "0"); }
+      return s;
+    },
+
     onInit: function () {
       // USER: type-ahead + schimbarea userului -> filtrează proiectele
       var oUserCB = this.byId("userCombo");
@@ -110,41 +118,51 @@ sap.ui.define([
 
     /* === SEND === */
     onSendFeedback: function () {
-      var oModel  = this.getOwnerComponent().getModel("mainService"); // OData V2
+      var oModel = this.getOwnerComponent().getModel("mainService");
 
-      var sToUser = this.byId("userCombo").getSelectedKey();  // TO_USER_ID
-
+      // Colectează datele din formular
+      var oFbReqInput = this.byId("fbRequestNumber");
+      var sFbReqNr = oFbReqInput ? oFbReqInput.getValue() : "";
+      
+      var sToUser = this.byId("userCombo").getSelectedKey();
       var oProjCB = this.byId("projectCombo");
       var sProjId = oProjCB.getSelectedKey()
                 || (oProjCB.getSelectedItem() && oProjCB.getSelectedItem().getKey())
-                || "";  // PROJ_ID
+                || "";
 
-      var sTypeId = this.byId("typeCombo").getSelectedKey();  // FB_TYPE_ID
-      var sText   = this.byId("feedbackText").getValue();
+      var sTypeId = this.byId("typeCombo").getSelectedKey();
+      var sText = this.byId("feedbackText").getValue();
+      var bAnonymous = this.byId("anonymousCheckbox").getSelected();
 
       // rezolvăm FROM_USER_ID (userul logat)
       this._resolveFromUserId().then(function (sFromUser) {
         var missing = [];
         if (!sFromUser) missing.push("From User");
         if (!sToUser)   missing.push("User");
-        if (!sProjId)   missing.push("Project");
         if (!sTypeId)   missing.push("Feedback Type");
         if (!sText)     missing.push("Feedback");
+        
         if (missing.length) {
-          MessageToast.show("Completează: " + missing.join(", ") + ".");
+          MessageToast.show("Completează câmpurile obligatorii: " + missing.join(", ") + ".");
           return;
         }
 
         var oPayload = {
-          FROM_USER_ID : sFromUser,
-          TO_USER_ID   : sToUser,
-          PROJ_ID      : sProjId,
-          FB_TYPE_ID   : sTypeId,
-          INPUT_TEXT   : sText,
-          IS_ANONYMOUS : ""   // sau "X" dacă vei adăuga checkbox
+          FROM_USER_ID: sFromUser,
+          TO_USER_ID: sToUser,
+          FB_TYPE_ID: sTypeId,
+          INPUT_TEXT: sText,
+          IS_ANONYMOUS: bAnonymous ? "X" : ""
         };
 
-        // POST simplu (fără $batch)
+        if (sProjId) {
+          oPayload.PROJ_ID = sProjId;
+        }
+
+        if (sFbReqNr) {
+          oPayload.FB_REQ_NR = this._normId(sFbReqNr);
+        }
+
         if (oModel.setUseBatch) { oModel.setUseBatch(false); }
 
         this.getView().setBusy(true);
@@ -152,14 +170,24 @@ sap.ui.define([
           oModel.create("/FeedbackSet", oPayload, {
             success: function (oCreated) {
               this.getView().setBusy(false);
-              MessageToast.show("Feedback trimis. ID: " + (oCreated.FB_ID || "-"));
 
-              // 🔹 curățăm formularul complet după succes
+              var sToUserName = "";
+              var oUserCombo = this.byId("userCombo");
+              var oSelectedItem = oUserCombo && oUserCombo.getSelectedItem();
+              if (oSelectedItem) {
+                sToUserName = oSelectedItem.getText();
+              }
+              
+              var successMsg = sToUserName ? 
+                "Feedback successfully sent to " + sToUserName + "!" :
+                "Feedback successfully sent!";
+              
+              MessageToast.show(successMsg);
               this._resetForm();
             }.bind(this),
             error: function (oErr) {
               this.getView().setBusy(false);
-              var msg = "Eroare la trimitere (FeedbackSet create).";
+              var msg = "Eroare la trimiterea feedback-ului.";
               try {
                 var r = JSON.parse(oErr.responseText);
                 msg = (r && r.error && r.error.message && r.error.message.value) || msg;
@@ -173,6 +201,10 @@ sap.ui.define([
 
     /* === HELPERS === */
     _resetForm: function () {
+      // feedback request number
+      var oFbReqInput = this.byId("fbRequestNumber");
+      if (oFbReqInput) { oFbReqInput.setValue(""); }
+
       // user
       var oUserCB = this.byId("userCombo");
       if (oUserCB) {
@@ -193,18 +225,22 @@ sap.ui.define([
       var oTypeCB = this.byId("typeCombo");
       if (oTypeCB) { oTypeCB.setSelectedKey(""); }
 
+      // anonymous checkbox
+      var oAnonymousChk = this.byId("anonymousCheckbox");
+      if (oAnonymousChk) { oAnonymousChk.setSelected(false); }
+
       // text
       var oText = this.byId("feedbackText");
       if (oText) { oText.setValue(""); }
     },
 
     _resolveFromUserId: function () {
-      var oComp   = this.getOwnerComponent();
+      var oComp = this.getOwnerComponent();
       var oLogged = oComp.getModel("loggedUser");
 
-      // 1) model
+      // 1) model loggedUser - folosește proprietatea corectă
       if (oLogged) {
-        var id = oLogged.getProperty("/user_id") || oLogged.getProperty("/USER_ID") || "";
+        var id = oLogged.getProperty("/userId") || "";
         if (id) {
           try { localStorage.setItem("loggedUserId", id); } catch (e) {}
           return Promise.resolve(id);
@@ -220,14 +256,14 @@ sap.ui.define([
       // 3) OData după EMAIL
       var email = "";
       if (oLogged) {
-        email = oLogged.getProperty("/email") || oLogged.getProperty("/EMAIL") || "";
+        email = oLogged.getProperty("/email") || "";
       }
       try { if (!email) email = localStorage.getItem("loggedEmail") || ""; } catch (e) {}
 
       if (!email) { return Promise.resolve(""); }
 
       var sEmailUp = email.toUpperCase();
-      var oModel  = oComp.getModel("mainService");
+      var oModel = oComp.getModel("mainService");
 
       return new Promise(function (resolve) {
         oModel.read("/UserSet", {
@@ -236,7 +272,7 @@ sap.ui.define([
           success: function (oData) {
             var uid = (oData.results && oData.results[0] && oData.results[0].USER_ID) || "";
             if (uid) {
-              if (oLogged) { oLogged.setProperty("/user_id", uid); }
+              if (oLogged) { oLogged.setProperty("/userId", uid); }
               try { localStorage.setItem("loggedUserId", uid); } catch (e) {}
             }
             resolve(uid);
@@ -247,23 +283,26 @@ sap.ui.define([
     },
 
     onBack: function () {
-  var oComponent = this.getOwnerComponent();
-  var oLoggedUserModel = oComponent.getModel("loggedUser");
-  var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+      // Curăță formularul înainte de navigare
+      this._resetForm();
+      
+      var oComponent = this.getOwnerComponent();
+      var oLoggedUserModel = oComponent.getModel("loggedUser");
+      var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 
-  if (oLoggedUserModel) {
-    var userData = oLoggedUserModel.getData();
-    var role = (userData.role || "").toLowerCase();
-    
-    if (role === "manager") {
-      oRouter.navTo("ManagerDashboard");
-    } else {
-      oRouter.navTo("UserDashboard");
+      if (oLoggedUserModel) {
+        var userData = oLoggedUserModel.getData();
+        var role = (userData.role || "").toLowerCase();
+        
+        if (role === "manager") {
+          oRouter.navTo("ManagerDashboard");
+        } else {
+          oRouter.navTo("UserDashboard");
+        }
+      } else {
+        // Fallback la UserDashboard dacă nu găsim datele utilizatorului
+        oRouter.navTo("UserDashboard");
+      }
     }
-  } else {
-    // Fallback la UserDashboard dacă nu găsim datele utilizatorului
-    oRouter.navTo("UserDashboard");
-  }
-}
   });
 });

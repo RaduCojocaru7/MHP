@@ -50,7 +50,12 @@
                    class="tightTable sapUiSizeCompact"
                    width="100%"
                    mode="None"
-                   items="{ path: 'mainService>/Manager_Feedback_RequestSet' }">
+                   items="{ 
+                     path: 'mainService>/Manager_Feedback_RequestSet',
+                     parameters: { 
+                       $select: 'FB_REQ_ID,FB_REQ_NR,FROM_MNGR_ID,TO_MNGR_ID,TEAM_MBR_ID,SEND_DATE,INPUT_TEXT,PROJ_ID,STATUS' 
+                     }
+                   }">
               <columns>
                 <Column width="9rem"><Text text="Request Date"/></Column>
                 <Column width="7rem"><Text text="Status"/></Column>
@@ -58,20 +63,25 @@
                 <Column width="14rem"><Text text="From team manager"/></Column>
                 <Column width="16rem"><Text text="To project manager"/></Column>
                 <Column width="16rem"><Text text="Team member name"/></Column>
-                <Column><Text text="Content"/></Column>
+                <Column width="20rem"><Text text="Message"/></Column>
                 <Column width="10rem"><Text text="Project"/></Column>
               </columns>
 
               <items>
                 <ColumnListItem type="Inactive" vAlign="Middle">
                   <cells>
+                    <!-- Request Date -->
                     <Text text="{ path: 'mainService>SEND_DATE', formatter: '.fmtDateShort' }" wrapping="false"/>
+                    
+                    <!-- Status -->
                     <ObjectStatus text="{mainService>STATUS}"
                                   state="{= ${mainService>STATUS} === 'DONE' ? 'Success' :
                                            ${mainService>STATUS} === 'PENDING' ? 'Warning' : 'None' }"/>
+                    
+                    <!-- Request nr -->
                     <Text text="{mainService>FB_REQ_NR}" wrapping="false"/>
 
-                    <!-- nume din ID folosind mapa din modelul 'lkp' -->
+                    <!-- From team manager - nume din ID folosind mapa din modelul 'lkp' -->
                     <Text wrapping="false"
                       text="{
                         parts: [
@@ -81,6 +91,7 @@
                         formatter: '.fmtUserNameMap'
                       }"/>
 
+                    <!-- To project manager -->
                     <Text wrapping="false"
                       text="{
                         parts: [
@@ -90,6 +101,7 @@
                         formatter: '.fmtUserNameMap'
                       }"/>
 
+                    <!-- Team member name -->
                     <Text wrapping="false"
                       text="{
                         parts: [
@@ -99,8 +111,13 @@
                         formatter: '.fmtUserNameMap'
                       }"/>
 
-                    <Text text="{mainService>INPUT_TEXT}" wrapping="false"/>
+                    <!-- Message - Mesajul din feedback request -->
+                    <Text text="{mainService>INPUT_TEXT}" 
+                          wrapping="true" 
+                          maxLines="3"
+                          class="sapUiTinyMargin"/>
 
+                    <!-- Project -->
                     <Text wrapping="false"
                       text="{
                         parts: [

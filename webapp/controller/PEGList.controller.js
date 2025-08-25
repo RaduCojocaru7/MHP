@@ -193,12 +193,17 @@ sap.ui.define([
 
       // Build filters based on user role
       var aFilters = [];
-      if (this._isManager) {
+      var oLoggedUser = this.getOwnerComponent().getModel("loggedUser")?.getData();
+      var sRole = oLoggedUser?.role?.toLowerCase();
+
+      if (sRole === "manager") {
         aFilters.push(new Filter("MANAGER_ID", FilterOperator.EQ, this._sUserId));
-      } else {     
+      } else if (sRole === "hr") {
+        // HR sees all, no filter
+      } else {
         aFilters.push(new Filter("USER_ID", FilterOperator.EQ, this._sUserId));
       }
-
+      
       oModel.read("/Peg_RequestSet", {
         filters: aFilters,
         urlParameters: { 
@@ -208,7 +213,7 @@ sap.ui.define([
           this._processPEGData(oData.results || []);
         }.bind(this),
         error: function(oError) {
-          console.error("Failed to load PEG data from Peg_RequestSet:", oError);
+          console.error("Failed to load PEG data:", oError);
           MessageToast.show("Nu s-au putut încărca datele PEG din server.");
           this._loadEmptyModel();
         }.bind(this)
@@ -220,6 +225,8 @@ sap.ui.define([
       var aProcessed = aPEGData.map(function(oPEG) {
         var sDisplayStatus = this._getDisplayStatus(oPEG.STATUS, oPEG);
         var sTitle = "PEG Request #" + (oPEG.PEG_REQ_NR || oPEG.PEG_ID);
+
+        var oDateObj = new Date(oPEG.REQUEST_DATE);
         
         return {
           id: oPEG.PEG_ID,
@@ -227,6 +234,7 @@ sap.ui.define([
           status: sDisplayStatus,
           originalStatus: oPEG.STATUS,
           createdDate: this._formatDate(oPEG.REQUEST_DATE),
+          createdDateObj: oDateObj,
           requesterName: this._getUserName(oPEG.USER_ID),
           managerName: this._getUserName(oPEG.MANAGER_ID),
           projectId: oPEG.PROJ_ID,
@@ -251,8 +259,6 @@ sap.ui.define([
       });
       
       this.getView().setModel(oLocal, "peg");
-
-      // Apply simple sorting (NO grouping)
       this._applySorting();
     },
 
@@ -317,22 +323,24 @@ sap.ui.define([
       if (!oBinding) return;
 
       // Simple sort by date (newest first) - NO grouping
-      var oDateSorter = new Sorter("createdDate", true);
+      var oDateSorter = new Sorter("createdDateObj", true);
       oBinding.sort([oDateSorter]);
     },
 
     /* ===== Navigation ===== */
     onNavBack: function () {
       var role = this.getOwnerComponent().getModel("loggedUser")?.getProperty("/role");
-      var sTarget = (role && role.toLowerCase() === "manager") ? "ManagerDashboard" : "UserDashboard";
+      var sRole = role.toLowerCase().trim();
+      var sTarget;
+      if (sRole === "manager") {
+        sTarget = "ManagerDashboard";
+      } else if (sRole === "hr") {
+        sTarget = "HRDashboard";
+      } else {
+        sTarget = "UserDashboard";
+      }
       UIComponent.getRouterFor(this).navTo(sTarget);
     },
-
-    onCreateNewPEG: function() {
-      this.getOwnerComponent().getRouter().navTo("PEGRequest");
-    },
-
-
 
     /* ===== Utility Functions ===== */
     _getUserName: function(sUserId) {
@@ -348,7 +356,6 @@ sap.ui.define([
     _formatDate: function(oDate) {
       if (!oDate) return "";
       
-      // dacă vine ca string din OData (ex: "Tue Aug 19 2025 03:00:00 GMT+0300...")
       var oDateObj = new Date(oDate);
       if (isNaN(oDateObj.getTime())) {
         return oDate; // fallback dacă nu se poate converti

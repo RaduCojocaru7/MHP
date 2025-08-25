@@ -95,13 +95,15 @@
         { "name": "ForgotPassword", "pattern": "ForgotPassword", "target": ["TargetForgotPassword"] },
         { "name": "UserDashboard", "pattern": "UserDashboard", "target": ["TargetUserDashboard"] },
         { "name": "ManagerDashboard", "pattern": "ManagerDashboard", "target": ["TargetManagerDashboard"] },
+        { "name": "HRDashboard", "pattern": "HRDashboard", "target": ["TargetHRDashboard"]},
         { "name": "fb360", "pattern": "fb360", "target": ["fb360"] },
         { "name": "FeedbackRequest", "pattern": "FeedbackRequest", "target": ["TargetFeedbackRequest"] },
         { "name": "PEGRequest", "pattern": "PEGRequest", "target": ["TargetPEGRequest"] },
         { "name": "PEGList", "pattern": "PEGList", "target": ["TargetPEGList"] },
         { "name": "FeedbackList", "pattern": "FeedbackList", "target": ["TargetFeedbackList"] },
         { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] },
-        { "pattern": "MyTeam", "name": "MyTeam", "target": ["MyTeam"] }
+        { "pattern": "MyTeam", "name": "MyTeam", "target": ["MyTeam"] },
+        { "name": "EmployeeList", "pattern": "EmployeeList", "target": ["TargetEmployeeList"]}
       ],
       "targets": {
         "TargetLogin": { 
@@ -119,6 +121,19 @@
         "TargetManagerDashboard": { 
           "id": "ManagerDashboard", 
           "name": "ManagerDashboard" 
+        },
+        "TargetHRDashboard": { 
+          "id": "HRDashboard", 
+          "name": "HRDashboard" 
+        },
+        "TargetEmployeeList": {
+          "type": "View",
+          "name": "EmployeeList",
+          "viewType": "XML",
+          "id": "EmployeeList",
+          "controlAggregation": "pages",
+          "controlId": "app",
+          "transition": "slide"
         },
         "fb360": {
           "type": "View",

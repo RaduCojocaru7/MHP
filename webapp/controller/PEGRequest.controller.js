@@ -314,17 +314,27 @@ sap.ui.define([
       }
 
       BusyIndicator.show(0);
-      
-      // Send POST request to create new PEG request
+
       oModel.create("/Peg_RequestSet", oPEGRequestData, {
         success: function(oData) {
           BusyIndicator.hide();
           console.log("PEG request created successfully:", oData);
+
+          var sPegReqNr = (oData && oData.PEG_REQ_NR) || "";
+          var successMsg = "";
           
-          var sMessage = "PEG request sent successfully!\n" +
-                         "Manager: " + oSelectedManager.name + "\n" +
-                         "Project: " + oSelectedProject.name;
-          MessageToast.show(sMessage);
+          if (sPegReqNr) {
+            successMsg = "PEG request #" + sPegReqNr + " sent successfully";
+          } else {
+            successMsg = "PEG request sent successfully";
+          }
+
+          if (oSelectedManager.name && oSelectedProject.name) {
+            successMsg += " for project '" + oSelectedProject.name + "' to " + oSelectedManager.name;
+          }
+          successMsg += "!";
+          
+          MessageToast.show(successMsg);
           
           // Clear selections after successful send
           this._clearSelections();

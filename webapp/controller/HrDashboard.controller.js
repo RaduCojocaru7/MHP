@@ -5,20 +5,28 @@ sap.ui.define([
 
   return Controller.extend("fbtool.controller.HRDashboard", {
     onInit: function () {
-      const oUserModel = this.getOwnerComponent().getModel("loggedUser");
-      if (oUserModel) {
-        this.getView().setModel(oUserModel, "user");
-      } else {
-        this.getOwnerComponent().getRouter().navTo("Login");
-      }
+      var oView = this.getView();
+
+      this.getView().addEventDelegate({
+        onBeforeShow: function () {
+          const oUserModel = this.getOwnerComponent().getModel("loggedUser");
+
+          if (oUserModel) {
+            oView.setModel(oUserModel, "user");
+            oUserModel.refresh(true);
+            console.log("Model refreshed and bound to HRDashboard");
+          } else {
+            console.error("No logged user model, redirecting...");
+            this.getOwnerComponent().getRouter().navTo("Login");
+          }
+        }.bind(this)
+      });
     },
 
     onLogout: function () {
-      // păstrează emailul pentru pre-populare, curăță parola
       var oComp = this.getOwnerComponent();
       oComp.setModel(null, "loggedUser");
 
-      // încearcă să golești parola din login view dacă e încărcată
       var oLoginView = oComp.byId("Login");
       if (oLoginView && oLoginView.getController && oLoginView.getController().clearInputs) {
         oLoginView.getController().clearInputs();
@@ -32,11 +40,15 @@ sap.ui.define([
     },
 
     onNavigateToPEGList: function () {
+      console.log("Navigating to PEGList…");
       this.getOwnerComponent().getRouter().navTo("PEGList");
     },
 
     onNavigateToEmployeeList: function () {
+      console.log("Navigating to EmployeeList…");
       this.getOwnerComponent().getRouter().navTo("EmployeeList");
-    }
+    },
+
+
   });
 });
