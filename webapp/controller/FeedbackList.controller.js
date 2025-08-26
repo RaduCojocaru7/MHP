@@ -14,7 +14,11 @@ sap.ui.define([
       this._sUserId  = "";
       this._userById = Object.create(null);       
       this._typeById = Object.create(null);       
-      this._projById = Object.create(null);      
+      this._projById = Object.create(null);
+      
+      // Debouncing properties
+      this._filterTimeout = null;
+      this._initTimeout = null;
 
       // Curăță cache-ul vechi
       try {
@@ -30,10 +34,10 @@ sap.ui.define([
 
       this._initializeFeedbackList();
       
-      // Verifică periodic dacă utilizatorul s-a schimbat (mai des)
+      // Verifică periodic dacă utilizatorul s-a schimbat (redus la 3 secunde)
       this._userCheckInterval = setInterval(function() {
         this._checkForUserChange();
-      }.bind(this), 1000); // la fiecare secundă în loc de 2
+      }.bind(this), 3000);
     },
 
     // Verifică dacă utilizatorul s-a schimbat și actualizează automat
@@ -51,8 +55,18 @@ sap.ui.define([
       }
     },
 
-    // Inițializarea listei de feedback
+    // Inițializarea listei de feedback cu debouncing
     _initializeFeedbackList: function() {
+      if (this._initTimeout) {
+        clearTimeout(this._initTimeout);
+      }
+      
+      this._initTimeout = setTimeout(function() {
+        this._doInitializeFeedbackList();
+      }.bind(this), 200);
+    },
+
+    _doInitializeFeedbackList: function() {
       this._checkForUserChange();
       
       Promise.all([
@@ -74,17 +88,8 @@ sap.ui.define([
           oSel.setSelectedKey(this._sMode);
         }
         
-        setTimeout(function() {
-          this._applyFilters();
-   
-          setTimeout(function() {
-            var oList = this.byId("fbList");
-            var oBinding = oList && oList.getBinding("items");
-            if (oBinding) {
-              oBinding.refresh(false); // soft refresh pentru formatters
-            }
-          }.bind(this), 200); 
-        }.bind(this), 200); 
+        // Aplicăm filtrele cu debouncing
+        this._applyFilters();
         
       }.bind(this));
     },
@@ -96,9 +101,7 @@ sap.ui.define([
       
       if (sProperty === "/userId" && newValue !== this._sUserId) {
         this._resetControllerState();
-        setTimeout(function() {
-          this._initializeFeedbackList();
-        }.bind(this), 100);
+        this._initializeFeedbackList();
       }
     },
  
@@ -162,8 +165,21 @@ sap.ui.define([
       }.bind(this));
     },
  
-    /* ===== Filtering core ===== */
+    /* ===== Filtering core cu debouncing ===== */
     _applyFilters: function () {
+      // Anulează timeout-ul precedent
+      if (this._filterTimeout) {
+        clearTimeout(this._filterTimeout);
+      }
+      
+      // Setează un delay pentru a evita request-urile multiple
+      this._filterTimeout = setTimeout(function() {
+        this._doApplyFilters();
+      }.bind(this), 300); // 300ms delay
+    },
+
+    // Logica reală de filtrare
+    _doApplyFilters: function () {
       var oComp = this.getOwnerComponent();
       var oLogged = oComp.getModel("loggedUser");
       var currentModelUserId = oLogged ? oLogged.getProperty("/userId") : "";
@@ -178,21 +194,12 @@ sap.ui.define([
       var oList = this.byId("fbList");
       var oBinding = oList && oList.getBinding("items");
       
-      if (!oBinding) {
-        setTimeout(function() {
-          this._applyFilters();
-        }.bind(this), 500); 
-        return;
-      }
-      
-      if (!this._sUserId) {
-        oBinding.filter([], "Application");
+      if (!oBinding || !this._sUserId) {
         return; 
       }
 
-      var iCurrentLength = oBinding.getLength ? oBinding.getLength() : 0;
- 
-      var userIdForFilter = parseInt(this._sUserId, 10);
+      // Asigură-te că USER_ID are padding corect (003 în loc de 3)
+      var userIdForFilter = this._normalizePadding(this._sUserId);
       var aFilters = [];
 
       if (this._sMode === "received") {
@@ -205,14 +212,7 @@ sap.ui.define([
         aFilters.push(new Filter("INPUT_TEXT", FilterOperator.Contains, this._sQuery.trim()));
       }
 
-      if (iCurrentLength === 0) {
-        oBinding.refresh(true);
-        setTimeout(function() {
-          oBinding.filter(aFilters, "Application");
-        }, 300); 
-      } else {
-        oBinding.filter(aFilters, "Application");
-      }
+      oBinding.filter(aFilters, "Application");
     },
 
     _clearFeedbackList: function() {
@@ -223,7 +223,6 @@ sap.ui.define([
       }
     },
 
-   
     _changeUser: function(sNewUserId) {
       this._clearFeedbackList();
       this._sUserId = sNewUserId || "";
@@ -249,11 +248,21 @@ sap.ui.define([
       }
     },
 
-    // Cleanup
+    // Cleanup cu timeout-uri
     onExit: function() {
       if (this._userCheckInterval) {
         clearInterval(this._userCheckInterval);
         this._userCheckInterval = null;
+      }
+      
+      if (this._filterTimeout) {
+        clearTimeout(this._filterTimeout);
+        this._filterTimeout = null;
+      }
+      
+      if (this._initTimeout) {
+        clearTimeout(this._initTimeout);
+        this._initTimeout = null;
       }
       
       var oComp = this.getOwnerComponent();
@@ -268,14 +277,6 @@ sap.ui.define([
       var sKey = oEvent.getSource().getSelectedKey();
       this._sMode = (sKey === "sent") ? "sent" : "received";
       this._applyFilters();
-
-      setTimeout(function() {
-        var oList = this.byId("fbList");
-        var oBinding = oList && oList.getBinding("items");
-        if (oBinding) {
-          oBinding.refresh(false); // soft refresh pentru formatters
-        }
-      }.bind(this), 100);
     },
  
     onRefresh: function (oEvent) {
@@ -307,17 +308,28 @@ sap.ui.define([
     },
  
     /* ===== Formatters ===== */
-    fmtUserName: function (sUserId) {
+    fmtUserName: function (sUserId, sIsAnonymous) {
       if (!sUserId) { return ""; }
+      
+      // Pentru feedback anonim - verifică câmpul is_anonymous
+      if (sIsAnonymous === 'X') {
+        return "Anonymous";
+      }
+      
+      // Pentru feedback anonim - verifică pentru 'ANONYM' (fallback)
+      if (sUserId === 'ANONYM') {
+        return "Anonymous";
+      }
 
       if (!this._userById || Object.keys(this._userById).length === 0) {
+        // Refresh mai rar pentru a evita loop-urile
         setTimeout(function() {
           var oList = this.byId("fbList");
           var oBinding = oList && oList.getBinding("items");
           if (oBinding) {
             oBinding.refresh(false);
           }
-        }.bind(this), 300); 
+        }.bind(this), 500); 
       }
       
       return (this._userById && this._userById[sUserId]) || sUserId;
@@ -330,6 +342,10 @@ sap.ui.define([
  
     fmtProjName: function (sProjId) {
       if (!sProjId) { return ""; }
+       
+      if (sProjId === "999") {
+        return "-";
+      }
       return (this._projById && this._projById[sProjId]) || sProjId;
     },
  
@@ -350,6 +366,17 @@ sap.ui.define([
     },
  
     /* ===== Helpers ===== */
+    // Normalizează ID-urile cu padding (similar cu FB360 controller)
+    _normalizePadding: function (sValue) {
+      if (!sValue) { return ""; }
+      var s = String(sValue).trim();
+      // Dacă e doar cifre și mai puțin de 3 caractere, adaugă padding
+      if (/^\d+$/.test(s) && s.length < 3) {
+        s = s.padStart(3, "0");
+      }
+      return s;
+    },
+
     _resolveFromUserId: function () {
       var oComp = this.getOwnerComponent();
       var oLogged = oComp.getModel("loggedUser");

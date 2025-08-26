@@ -34,7 +34,7 @@
                     <Select id="careerFilter" change=".onFilterChange" width="12rem" class="sapUiTinyMarginEnd sapUiSmallMarginBottom">
                         <items>
                             <core:Item key="" text="All Career Levels" />
-                            <core:Item key="1" text="Intern" />
+                            <core:Item key="1" text="Entry" />
                             <core:Item key="2" text="Mid" />
                             <core:Item key="3" text="Senior" />
                         </items>

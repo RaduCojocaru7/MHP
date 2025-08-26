@@ -9,7 +9,7 @@
   ],
   "main": "webapp/index.html",
   "devDependencies": {
-    "@sap/ux-ui5-tooling": "1",
+    "@sap/ux-ui5-tooling": "^1.18.5",
     "@ui5/cli": "^4.0.23",
     "ui5-middleware-simpleproxy": "^3.4.3"
   },
@@ -27,5 +27,8 @@
   "sapuxLayer": "CUSTOMER_BASE",
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
 }

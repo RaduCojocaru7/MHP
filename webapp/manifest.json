@@ -33,7 +33,7 @@
     "rootView": { "viewName": "fbtool.view.App", "type": "XML", "id": "App", "async": true },
     "dependencies": {
       "minUI5Version": "1.138.1",
-      "libs": { "sap.m": {}, "sap.ui.core": {} }
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.ui.export": {} }
     },
     "contentDensities": { "compact": true, "cozy": true },
 
@@ -103,7 +103,8 @@
         { "name": "FeedbackList", "pattern": "FeedbackList", "target": ["TargetFeedbackList"] },
         { "name": "ProfileInfo", "pattern": "ProfileInfo", "target": ["TargetProfileInfo"] },
         { "pattern": "MyTeam", "name": "MyTeam", "target": ["MyTeam"] },
-        { "name": "EmployeeList", "pattern": "EmployeeList", "target": ["TargetEmployeeList"]}
+        { "name": "EmployeeList", "pattern": "EmployeeList", "target": ["TargetEmployeeList"]},
+        { "pattern": "manager/peg-edit", "name": "ManagerPegEdit", "target": ["TargetManagerPegEdit"] }
       ],
       "targets": {
         "TargetLogin": { 
@@ -194,6 +195,15 @@
           "name": "FeedbackRequest",
           "viewType": "XML",
           "id": "FeedbackRequest",
+          "controlAggregation": "pages",
+          "controlId": "app",
+          "transition": "slide"
+        },
+        "TargetManagerPegEdit": {
+          "type": "View",
+          "name": "ManagerPegEdit",
+          "viewType": "XML",
+          "id": "ManagerPegEdit",
           "controlAggregation": "pages",
           "controlId": "app",
           "transition": "slide"

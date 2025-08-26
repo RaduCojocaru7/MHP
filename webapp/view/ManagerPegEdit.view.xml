@@ -1,0 +1,156 @@
+<mvc:View
+  controllerName="fbtool.controller.ManagerPegEdit"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m">
+
+  <Page title="Edit PEG">
+  <headerContent>
+      <Button
+        icon="sap-icon://nav-back"
+        text="Back"
+        press="onNavBack"
+        type="Transparent"
+        class="subtleBtn"/>
+    </headerContent>
+
+    <content>
+      <VBox class="sapUiLargeMargin sapUiContentPadding">
+
+        <!-- PEG request -->
+        <Label text="PEG Request Number:"/>
+        <Input width="320px"
+               value="{peg>/PEG_REQ_NR}"
+               change=".onReqChange"
+               submit=".onReqChange"/>
+
+        <!-- Tabel criterii -->
+        <Table id="pegTable"
+               class="pegTable sapUiMediumMarginTop"
+               inset="false"
+               showSeparators="Inner"
+               width="100%">
+          <columns>
+            <Column width="28%">
+              <Text text="Criterion"/>
+            </Column>
+            <Column hAlign="Center" width="32%">
+              <Text text="Grade (1–5)"/>
+            </Column>
+            <Column>
+              <Text text="Comment"/>
+            </Column>
+          </columns>
+
+          <items>
+            <!-- EXPERTISE -->
+            <ColumnListItem>
+              <cells>
+                <Text text="Expertise and Working Results"/>
+                <RadioButtonGroup selectedIndex="{peg>/EXPERTISE}" columns="5" class="gradeGroup">
+                  <buttons>
+                    <RadioButton text="1" tooltip="Does not meet expectations"/>
+                    <RadioButton text="2" tooltip="Usually meets expectations"/>
+                    <RadioButton text="3" tooltip="Always meets expectations"/>
+                    <RadioButton text="4" tooltip="Usually exceeds expectations"/>
+                    <RadioButton text="5" tooltip="Consistently exceeds expectations"/>
+                  </buttons>
+                </RadioButtonGroup>
+                <Input value="{peg>/EXPERTISE_TXT}" width="100%"/>
+              </cells>
+            </ColumnListItem>
+
+            <!-- NETWORK -->
+            <ColumnListItem>
+              <cells>
+                <Text text="Networking Skills and Entrepreneurship"/>
+                <RadioButtonGroup selectedIndex="{peg>/NETWORK}" columns="5" class="gradeGroup">
+                  <buttons>
+                    <RadioButton text="1" tooltip="Does not meet expectations"/>
+                    <RadioButton text="2" tooltip="Usually meets expectations"/>
+                    <RadioButton text="3" tooltip="Always meets expectations"/>
+                    <RadioButton text="4" tooltip="Usually exceeds expectations"/>
+                    <RadioButton text="5" tooltip="Consistently exceeds expectations"/>
+                  </buttons>
+                </RadioButtonGroup>
+                <Input value="{peg>/NETWORK_TXT}" width="100%"/>
+              </cells>
+            </ColumnListItem>
+
+            <!-- TEAMING -->
+            <ColumnListItem>
+              <cells>
+                <Text text="Teaming and Partnership"/>
+                <RadioButtonGroup selectedIndex="{peg>/TEAMING}" columns="5" class="gradeGroup">
+                  <buttons>
+                    <RadioButton text="1" tooltip="Does not meet expectations"/>
+                    <RadioButton text="2" tooltip="Usually meets expectations"/>
+                    <RadioButton text="3" tooltip="Always meets expectations"/>
+                    <RadioButton text="4" tooltip="Usually exceeds expectations"/>
+                    <RadioButton text="5" tooltip="Consistently exceeds expectations"/>
+                  </buttons>
+                </RadioButtonGroup>
+                <Input value="{peg>/TEAMING_TXT}" width="100%"/>
+              </cells>
+            </ColumnListItem>
+
+            <!-- PASSION -->
+            <ColumnListItem>
+              <cells>
+                <Text text="Passion and Resilience"/>
+                <RadioButtonGroup selectedIndex="{peg>/PASSION}" columns="5" class="gradeGroup">
+                  <buttons>
+                    <RadioButton text="1" tooltip="Does not meet expectations"/>
+                    <RadioButton text="2" tooltip="Usually meets expectations"/>
+                    <RadioButton text="3" tooltip="Always meets expectations"/>
+                    <RadioButton text="4" tooltip="Usually exceeds expectations"/>
+                    <RadioButton text="5" tooltip="Consistently exceeds expectations"/>
+                  </buttons>
+                </RadioButtonGroup>
+                <Input value="{peg>/PASSION_TXT}" width="100%"/>
+              </cells>
+            </ColumnListItem>
+
+            <!-- AUTONOMY -->
+            <ColumnListItem>
+              <cells>
+                <Text text="Autonomy and Leadership"/>
+                <RadioButtonGroup selectedIndex="{peg>/AUTONOMY}" columns="5" class="gradeGroup">
+                  <buttons>
+                    <RadioButton text="1" tooltip="Does not meet expectations"/>
+                    <RadioButton text="2" tooltip="Usually meets expectations"/>
+                    <RadioButton text="3" tooltip="Always meets expectations"/>
+                    <RadioButton text="4" tooltip="Usually exceeds expectations"/>
+                    <RadioButton text="5" tooltip="Consistently exceeds expectations"/>
+                  </buttons>
+                </RadioButtonGroup>
+                <Input value="{peg>/AUTONOMY_TXT}" width="100%"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+
+        <!-- Legend -->
+        <HBox class="legendRow sapUiMediumMarginTop" justifyContent="SpaceBetween">
+          <Text text="1 - Does not meet expectations" class="legendItem"/>
+          <Text text="2 - Usually meets expectations" class="legendItem"/>
+          <Text text="3 - Always meets expectations" class="legendItem"/>
+          <Text text="4 - Usually exceeds expectations" class="legendItem"/>
+          <Text text="5 - Consistently exceeds expectations" class="legendItem"/>
+        </HBox>
+
+        <!-- Actions -->
+        <HBox class="sapUiLargeMarginTop" justifyContent="End">
+          <Button text="Save" 
+              type="Emphasized" 
+              class="sapUiTinyMarginEnd" 
+              press=".onSave"/>
+
+          <Button text="Export to Excel"
+              icon="sap-icon://excel-attachment"
+              press=".onExport"/>
+        </HBox>
+
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

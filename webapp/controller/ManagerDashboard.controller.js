@@ -94,6 +94,12 @@ sap.ui.define([
   this.getOwnerComponent().getRouter().navTo("MyTeam");
     },
 
+     onNavigateToPegEdit: function () {
+     
+        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+        oRouter.navTo("ManagerPegEdit");
+    },
+
     onExit: function() {
       var oRouter = this.getOwnerComponent().getRouter();
       if (oRouter && oRouter.getRoute("ManagerDashboard")) {

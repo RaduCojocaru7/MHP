@@ -40,7 +40,7 @@
               intro="{ path: 'mainService>SEND_DATE', formatter: '.fmtDate' }">
               <attributes>
                 <ObjectAttribute title="From"
-                  text="{ path: 'mainService>FROM_USER_ID', formatter: '.fmtUserName' }"/>
+                  text="{ parts: [{path: 'mainService>FROM_USER_ID'}, {path: 'mainService>IS_ANONYMOUS'}], formatter: '.fmtUserName' }"/>
                 <ObjectAttribute title="To"
                   text="{ path: 'mainService>TO_USER_ID', formatter: '.fmtUserName' }"/>
                 <ObjectAttribute title="Type"
