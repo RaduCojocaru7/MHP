@@ -81,7 +81,15 @@
         </HBox>
 
         <!-- Second Row -->
-        <HBox justifyContent="Start" wrap="NoWrap">
+        <HBox justifyContent="Start" wrap="NoWrap" class="sapUiMediumMarginBottom">
+
+
+        <Button
+            icon="sap-icon://edit"
+            text="Edit PEG"
+            press="onNavigateToPegEdit"
+             class="sapUiMediumMarginEnd navRect"
+            width="18rem" iconFirst="true"/>
           
           <Button
             icon="sap-icon://permission"
@@ -90,21 +98,24 @@
             class="sapUiMediumMarginEnd navRect"
             width="18rem" iconFirst="true" />
 
-          <Button
+
+            <Button
             icon="sap-icon://group"
             text="My Team"
             press="onNavigateToMyTeam"
             class="sapUiMediumMarginEnd navRect"
             width="18rem" iconFirst="true" />
 
-          <Button
-            icon="sap-icon://edit"
-            text="Edit PEG"
-            press="onNavigateToPegEdit"
-             class="navRect"
-            width="18rem" iconFirst="true"/>
+          
 
-        </HBox>
+          </HBox>
+
+
+         
+
+          
+
+        
       </VBox>
 
 

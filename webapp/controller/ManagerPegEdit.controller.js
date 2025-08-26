@@ -134,6 +134,10 @@ _loadCriteria: function () {
       });
     },
 
+
+
+
+
     /* creeaza notele, le salveaza si marcheaza in tabela de grades statusul ca fiind SENT */
 
     onSave: function () {
