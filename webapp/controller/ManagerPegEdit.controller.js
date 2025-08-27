@@ -4,8 +4,9 @@ sap.ui.define([
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
   "sap/m/MessageToast",
-  "sap/m/MessageBox"
-], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox) {
+  "sap/m/MessageBox",
+   "sap/ui/core/UIComponent"
+], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox, UIComponent) {
   "use strict";
 
   return Controller.extend("fbtool.controller.ManagerPegEdit", {
@@ -180,7 +181,7 @@ _loadCriteria: function () {
       const sKey   = oModel.createKey("/Peg_RequestSet", { PEG_REQ_NR: sReqNr, PEG_ID: sPegId });
 
       oModel.update(sKey, { STATUS: "DONE" }, {
-        success: () => { oView.setBusy(false); MessageToast.show("Grades saved successfully. PEG request completed."); this._resetForm(); },
+        success: () => { oView.setBusy(false); MessageToast.show("Grades saved successfully. PEG request completed.");  },
         error:   () => { oView.setBusy(false); MessageToast.show("Grades saved, but the request status could not be updated."); }
       });
     },
@@ -419,6 +420,17 @@ _loadCriteria: function () {
         this.getView().setBusy(false);
         MessageBox.error("Failed to build the Excel report.");
       }
+    },
+
+
+    onNavBack: function () {
+       // curat formularul cand apas pe butonul de Back
+      this._resetForm();
+      UIComponent.getRouterFor(this).navTo("ManagerDashboard");
+    },
+
+    onClear: function () {
+       this._resetForm();
     }
 
   });

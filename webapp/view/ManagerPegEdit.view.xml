@@ -129,17 +129,33 @@
           <Text text="5 - Consistently exceeds expectations" class="legendItem"/>
         </HBox>
 
-        <!-- Actions -->
-        <HBox class="sapUiLargeMarginTop" justifyContent="End">
-          <Button text="Save" 
-              type="Emphasized" 
-              class="sapUiTinyMarginEnd" 
-              press=".onSave"/>
 
-          <Button text="Export to Excel"
-              icon="sap-icon://excel-attachment"
-              press=".onExport"/>
+         
+        <HBox class="sapUiLargeMarginTop" justifyContent="SpaceBetween" alignItems="Center">
+
+            <Button text="Refresh"
+                  icon="sap-icon://refresh"
+                  press=".onClear"/>
+
+
+            <HBox  justifyContent="End">
+              <Button text="Save" 
+                  type="Emphasized" 
+                  class="sapUiTinyMarginEnd" 
+                  press=".onSave"/>
+
+              <Button text="Export to Excel"
+                  icon="sap-icon://excel-attachment"
+                  press=".onExport"/>
+            </HBox>
+
         </HBox>
+
+        
+
+
+
+       
 
       </VBox>
     </content>
