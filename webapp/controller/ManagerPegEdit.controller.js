@@ -181,7 +181,7 @@ _loadCriteria: function () {
       const sKey   = oModel.createKey("/Peg_RequestSet", { PEG_REQ_NR: sReqNr, PEG_ID: sPegId });
 
       oModel.update(sKey, { STATUS: "DONE" }, {
-        success: () => { oView.setBusy(false); MessageToast.show("Grades saved successfully. PEG request completed."); this._resetForm(); },
+        success: () => { oView.setBusy(false); MessageToast.show("Grades saved successfully. PEG request completed.");  },
         error:   () => { oView.setBusy(false); MessageToast.show("Grades saved, but the request status could not be updated."); }
       });
     },
@@ -422,8 +422,14 @@ _loadCriteria: function () {
       }
     },
 
+
     onNavBack: function () {
+      this._resetForm();
       UIComponent.getRouterFor(this).navTo("ManagerDashboard");
+    },
+
+    onClear: function () {
+       this._resetForm();
     }
 
   });

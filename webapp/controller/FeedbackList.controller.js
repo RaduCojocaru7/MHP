@@ -308,21 +308,10 @@ sap.ui.define([
     },
  
     /* ===== Formatters ===== */
-    fmtUserName: function (sUserId, sIsAnonymous) {
+    fmtUserName: function (sUserId) {
       if (!sUserId) { return ""; }
       
-      // Pentru feedback anonim - verifică câmpul is_anonymous
-      if (sIsAnonymous === 'X') {
-        return "Anonymous";
-      }
-      
-      // Pentru feedback anonim - verifică pentru 'ANONYM' (fallback)
-      if (sUserId === 'ANONYM') {
-        return "Anonymous";
-      }
-
       if (!this._userById || Object.keys(this._userById).length === 0) {
-        // Refresh mai rar pentru a evita loop-urile
         setTimeout(function() {
           var oList = this.byId("fbList");
           var oBinding = oList && oList.getBinding("items");
@@ -333,6 +322,42 @@ sap.ui.define([
       }
       
       return (this._userById && this._userById[sUserId]) || sUserId;
+    },
+
+     fmtFromUserName: function (sUserId, sIsAnonymous) {
+      if (!sUserId) { return ""; }
+      
+      // Pentru modul SENT, afișează numele utilizatorului logat
+      if (this._sMode === "sent") {
+        return (this._userById && this._userById[this._sUserId]) || this._sUserId;
+      }
+      
+      // Pentru modul RECEIVED, verifică dacă e anonim
+      if (sIsAnonymous === 'X') {
+        return "Anonymous";
+      }
+    
+      if (!this._userById || Object.keys(this._userById).length === 0) {
+        setTimeout(function() {
+          var oList = this.byId("fbList");
+          var oBinding = oList && oList.getBinding("items");
+          if (oBinding) {
+            oBinding.refresh(false);
+          }
+        }.bind(this), 500); 
+      }
+      
+      return (this._userById && this._userById[sUserId]) || sUserId;
+    },
+
+    // Formatter pentru status anonim - afișează "X" dacă e anonim
+    fmtAnonymousStatus: function (sIsAnonymous) {
+      return sIsAnonymous === 'X' ? 'X' : '-';
+    },
+
+    // Formatter pentru vizibilitatea secțiunii Anonymous - doar pentru SENT
+    fmtAnonymousVisibility: function () {
+      return this._sMode === "sent";
     },
  
     fmtTypeName: function (sTypeId) {
@@ -366,11 +391,9 @@ sap.ui.define([
     },
  
     /* ===== Helpers ===== */
-    // Normalizează ID-urile cu padding (similar cu FB360 controller)
     _normalizePadding: function (sValue) {
       if (!sValue) { return ""; }
       var s = String(sValue).trim();
-      // Dacă e doar cifre și mai puțin de 3 caractere, adaugă padding
       if (/^\d+$/.test(s) && s.length < 3) {
         s = s.padStart(3, "0");
       }
@@ -380,8 +403,7 @@ sap.ui.define([
     _resolveFromUserId: function () {
       var oComp = this.getOwnerComponent();
       var oLogged = oComp.getModel("loggedUser");
- 
-      // Prioritate: modelul loggedUser
+
       if (oLogged) {
         var id = oLogged.getProperty("/userId") || "";
         if (id) { 
@@ -389,16 +411,14 @@ sap.ui.define([
           return Promise.resolve(id); 
         }
       }
-      
-      // Fallback: cache
+
       try {
         var cached = localStorage.getItem("loggedUserId") || "";
         if (cached) { 
           return Promise.resolve(cached); 
         }
       } catch (e) {}
-      
-      // Fallback: lookup prin email
+
       var email = "";
       if (oLogged) {
         email = oLogged.getProperty("/email") || "";
