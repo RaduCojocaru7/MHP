@@ -198,7 +198,7 @@ sap.ui.define([
 
               // curățare formular
               this._resetForm();
-              UIComponent.getRouterFor(this).navTo("ManagerDashboard");
+
             }.bind(this),
             error: function (oErr) {
               oView.setBusy(false);
@@ -272,6 +272,7 @@ sap.ui.define([
     },
 
     onNavBack: function () {
+      this._resetForm();
       UIComponent.getRouterFor(this).navTo("ManagerDashboard");
     }
   });
