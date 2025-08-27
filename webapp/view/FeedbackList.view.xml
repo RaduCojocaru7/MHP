@@ -45,7 +45,7 @@
                   text="{ path: 'mainService>TO_USER_ID', formatter: '.fmtUserName' }"/>
                 <ObjectAttribute title="Anonymous"
                   text="{ path: 'mainService>IS_ANONYMOUS', formatter: '.fmtAnonymousStatus' }"
-                  visible="{ path: '/', formatter: '.fmtAnonymousVisibility' }"/>
+                  visible="{ path: 'mainService>IS_ANONYMOUS', formatter: '.fmtAnonymousVisibility' }"/>
                 <ObjectAttribute title="Type"
                   text="{ path: 'mainService>FB_TYPE_ID', formatter: '.fmtTypeName' }"/>
                 <ObjectAttribute title="Project"

@@ -276,6 +276,21 @@ sap.ui.define([
     onModeSelectChange: function (oEvent) {
       var sKey = oEvent.getSource().getSelectedKey();
       this._sMode = (sKey === "sent") ? "sent" : "received";
+      
+      // Forțează refresh-ul pentru a actualiza vizibilitatea câmpurilor Anonymous
+      var oList = this.byId("fbList");
+      var oBinding = oList && oList.getBinding("items");
+      if (oBinding) {
+        // Salvează filtrele curente
+        var aCurrentFilters = oBinding.aFilters || [];
+        
+        // Forțează re-rendering prin eliminarea și readăugarea filtrelor
+        oBinding.filter([], "Application");
+        setTimeout(function() {
+          oBinding.filter(aCurrentFilters, "Application");
+        }.bind(this), 50);
+      }
+      
       this._applyFilters();
     },
  
@@ -324,15 +339,13 @@ sap.ui.define([
       return (this._userById && this._userById[sUserId]) || sUserId;
     },
 
-     fmtFromUserName: function (sUserId, sIsAnonymous) {
+    fmtFromUserName: function (sUserId, sIsAnonymous) {
       if (!sUserId) { return ""; }
       
-      // Pentru modul SENT, afișează numele utilizatorului logat
       if (this._sMode === "sent") {
         return (this._userById && this._userById[this._sUserId]) || this._sUserId;
       }
       
-      // Pentru modul RECEIVED, verifică dacă e anonim
       if (sIsAnonymous === 'X') {
         return "Anonymous";
       }
@@ -350,14 +363,25 @@ sap.ui.define([
       return (this._userById && this._userById[sUserId]) || sUserId;
     },
 
-    // Formatter pentru status anonim - afișează "X" dacă e anonim
     fmtAnonymousStatus: function (sIsAnonymous) {
       return sIsAnonymous === 'X' ? 'X' : '-';
     },
 
-    // Formatter pentru vizibilitatea secțiunii Anonymous - doar pentru SENT
-    fmtAnonymousVisibility: function () {
-      return this._sMode === "sent";
+    fmtAnonymousVisibility: function (sIsAnonymous) {
+      // Verifică explicit dacă suntem în modul SENT
+      var currentMode = this._sMode;
+      
+      // Dacă nu este setat _sMode, verifică din UI
+      if (!currentMode) {
+        var oSelect = this.byId("modeSelect");
+        if (oSelect) {
+          currentMode = oSelect.getSelectedKey() === "sent" ? "sent" : "received";
+          this._sMode = currentMode;
+        }
+      }
+      
+      // Returnează true doar pentru modul SENT
+      return (currentMode === "sent");
     },
  
     fmtTypeName: function (sTypeId) {
